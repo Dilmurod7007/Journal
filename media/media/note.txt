@@ -1,0 +1,19 @@
+vectary.com
+svgrepo.com
+slazzer.com
+https://www.freepng.ru/
+https://kinotochka.co/
+
+3.22 - 3.48
+3.57 - 4.10
+5.27 - 5.41
+6.07 - 6.20
+
+
+
+elastic search
+graphQL
+Docker
+AWS
+Microservices
+celery
