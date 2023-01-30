@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-8s^58)uma_y+d(b0-u9%&-__bn7f=^bn+jcv2-d5(#i79la8qm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'Dilmurod7007.pythonanywhere.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -116,7 +116,6 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOWED_ORIGINS = [
 "http://localhost:8080",
 "https://jurnal-uz.netlify.app",
-"https://ramziddinjurabek.pythonanywhere.com",
 ]
 
 
