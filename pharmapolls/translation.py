@@ -14,17 +14,17 @@ class AuthorTranslationOptions(TranslationOptions):
 
 @register(models.Jurnal)
 class JurnalTranslationOptions(TranslationOptions):
-    fields = ('author', 'organization', 'name', 'description', 'keyword',)
+    fields = ('author', 'name', 'description', 'keyword',)
 
 
 @register(models.Subdivision)
 class SubdivisionTranslationOptions(TranslationOptions):
-    fields = ('organization', 'name', 'description', 'adress', )
+    fields = ('name', 'description', 'adress', )
 
 
 @register(models.Conference)
 class ConferenceTranslationOptions(TranslationOptions):
-    fields = ('organization', 'name', 'description', 'adress', 'sponsor',)
+    fields = ('name', 'description', 'adress', 'sponsor',)
 
 
 @register(models.Seminar)
