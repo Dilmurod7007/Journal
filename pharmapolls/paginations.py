@@ -6,6 +6,11 @@ class PaginateBy12(pagination.PageNumberPagination):
     page_query_param = 'p'
 
 
+class PaginateBy15(pagination.PageNumberPagination):
+    page_size = 15
+    max_page_size = 50
+    page_query_param = 'p'
+
 
 
 class PaginateBy20(pagination.PageNumberPagination):

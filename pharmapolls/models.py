@@ -26,6 +26,7 @@ class Author(models.Model):
     family_name = models.CharField(max_length=50)
     description = RichTextField()
     work = models.CharField(max_length=250)
+    image = models.ImageField(upload_to='images/authors/', blank=True, null=True)
     count_author = models.IntegerField(default=0)
 
     def __str__(self):

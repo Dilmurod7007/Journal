@@ -14,6 +14,7 @@ from .permissions import IsAuthenticatedOrReadOnly
 class OrganizationList(generics.ListAPIView):
     queryset = models.Organization.objects.all().order_by('-id')
     serializer_class = serializers.OrganizationSerializer
+    pagination_class = paginations.PaginateBy15
 
 
 class PopOrganizationList(generics.ListAPIView):

@@ -131,9 +131,10 @@ class JurnalSerializer(serializers.ModelSerializer):
 
 
 class ConferenceSerializer(serializers.ModelSerializer):
+    organization = OrganizationSerializer()
 
     class Meta:
-        fields = ('id', 'organization_uz', 'organization_ru', 'organization_en', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive' )
+        fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive' )
         model = models.Conference
     
     def to_representation(self, instance):
