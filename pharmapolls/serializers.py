@@ -67,9 +67,10 @@ class StatyaSerializer(serializers.ModelSerializer):
 
 class StatyaforAuthorSerializer(serializers.ModelSerializer):
     jurnal = serializers.StringRelatedField()
+    author = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
-        fields = ('id', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', )
+        fields = ('id', 'author', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', )
         model = models.Statya
 
 
@@ -95,12 +96,11 @@ class AuthorDetailSerializer(serializers.ModelSerializer):
 
 
 class JurnalDetailSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
     organization = OrganizationSerializer()
     articles = StatyaSerializer(many=True, source='journal_article')
 
     class Meta:
-        fields = ('id', 'author', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'date', 'downloadview', 'views',
+        fields = ('id','organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'date', 'downloadview', 'views',
                   'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image', 'articles', )
         model = models.Jurnal
 
@@ -113,12 +113,11 @@ class JurnalDetailSerializer(serializers.ModelSerializer):
 
 
 class JurnalSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer()
     organization = OrganizationSerializer()
 
 
     class Meta:
-        fields = ('id', 'author', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'date', 'downloadview', 'views',
+        fields = ('id','organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'date', 'downloadview', 'views',
                   'pdf_file', 'keyword', 'image' )
         model = models.Jurnal
 

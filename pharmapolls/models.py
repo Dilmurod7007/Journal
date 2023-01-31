@@ -34,7 +34,6 @@ class Author(models.Model):
 
 
 class Jurnal(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     name = models.CharField(max_length=500)
     description = RichTextField()
