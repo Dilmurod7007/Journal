@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+
+# Media and Static directories
+/media/
+!/media/.gitkeep
+
+/static/
+!/static/.gitkeep

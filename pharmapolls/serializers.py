@@ -8,7 +8,7 @@ class SubdivisionSerializer(serializers.ModelSerializer):
     organization = serializers.StringRelatedField()
 
     class Meta:
-        fields = ('id', 'organization_uz', 'organization_ru', 'organization_en', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website', 'logo', )
+        fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website', 'logo', )
         model = models.Subdivision
 
     def to_representation(self, instance):
@@ -61,7 +61,7 @@ class StatyaSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
-        fields = ('id', 'author', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword_uz', 'keyword_ru', 'keyword_en', )
+        fields = ('id', 'author', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', )
         model = models.Statya
 
 
@@ -69,7 +69,7 @@ class StatyaforAuthorSerializer(serializers.ModelSerializer):
     jurnal = serializers.StringRelatedField()
 
     class Meta:
-        fields = ('id', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword_uz', 'keyword_ru', 'keyword_en', )
+        fields = ('id', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', )
         model = models.Statya
 
 
@@ -100,7 +100,7 @@ class JurnalDetailSerializer(serializers.ModelSerializer):
     articles = StatyaSerializer(many=True, source='journal_article')
 
     class Meta:
-        fields = ('id', 'author_uz', 'author_ru', 'author_en', 'organization_uz', 'organization_ru', 'organization_en', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'date', 'downloadview', 'views',
+        fields = ('id', 'author', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'date', 'downloadview', 'views',
                   'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image', 'articles', )
         model = models.Jurnal
 

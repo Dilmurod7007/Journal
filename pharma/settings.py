@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #tashqi
+    'drf_yasg',
     'rest_framework',
     'corsheaders',
     'ckeditor',
