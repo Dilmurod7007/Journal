@@ -9,9 +9,7 @@ class VidioInline(admin.StackedInline):
 
 
 class VideoGallerys(admin.ModelAdmin):
-    fieldsets = [
-        (None, {'fields': ["title", "photo"]})
-    ]
+
     inlines = [VidioInline]
 
 

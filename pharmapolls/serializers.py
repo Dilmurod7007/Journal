@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from . import models
 from django.db.models import Sum
-from django.utils.html import strip_tags
 
 
 class SubdivisionSerializer(serializers.ModelSerializer):
@@ -11,12 +10,6 @@ class SubdivisionSerializer(serializers.ModelSerializer):
         fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website', 'logo', )
         model = models.Subdivision
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
-        return data
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -28,12 +21,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
         model = models.Organization
 
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
-        return data
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -48,9 +35,6 @@ class AuthorSerializer(serializers.ModelSerializer):
         article = models.Statya.objects.filter(author__id=instance.id).aggregate(Sum('downloadview'))
         count_article = models.Statya.objects.filter(author__id=instance.id).count()
         data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
         data['count_download'] = article["downloadview__sum"]
         data['count_article'] = str(count_article)
         return data
@@ -80,16 +64,13 @@ class AuthorDetailSerializer(serializers.ModelSerializer):
     articles = StatyaforAuthorSerializer(many=True, source='article_author')
 
     class Meta:
-        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'surname_uz', 'surname_ru', 'surname_en', 'family_name_uz', 'family_name_ru', 'family_name_en', 'description_uz', 'description_ru', 'description_en', 'work_uz', 'work_ru', 'work_en', 'count_author', 'count_download', 'count_article', 'articles')
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'surname_uz', 'surname_ru', 'surname_en', 'family_name_uz', 'family_name_ru', 'family_name_en', 'description_uz', 'description_ru', 'description_en', 'work_uz', 'work_ru', 'work_en', 'count_author', 'count_download', 'count_article', 'articles', 'image')
         model = models.Author
 
     def to_representation(self, instance):
         article = models.Statya.objects.filter(author__id=instance.id).aggregate(Sum('downloadview'))
         count_article = models.Statya.objects.filter(author__id=instance.id).count()
         data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
         data['count_download'] = article["downloadview__sum"]
         data['count_article'] = str(count_article)
         return data
@@ -104,12 +85,6 @@ class JurnalDetailSerializer(serializers.ModelSerializer):
                   'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image', 'articles', )
         model = models.Jurnal
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
-        return data
 
 
 class JurnalSerializer(serializers.ModelSerializer):
@@ -121,12 +96,6 @@ class JurnalSerializer(serializers.ModelSerializer):
                   'pdf_file', 'keyword', 'image' )
         model = models.Jurnal
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
-        return data
 
 
 class ConferenceSerializer(serializers.ModelSerializer):
@@ -136,12 +105,7 @@ class ConferenceSerializer(serializers.ModelSerializer):
         fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive' )
         model = models.Conference
     
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
-        return data
+
 
 
 class SeminarSerializer(serializers.ModelSerializer):
@@ -150,12 +114,6 @@ class SeminarSerializer(serializers.ModelSerializer):
         fields = ('id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', )
         model = models.Seminar
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
-        return data
 
 
 class VideoSerializer(serializers.ModelSerializer):
@@ -178,18 +136,12 @@ class NewsSerializer(serializers.ModelSerializer):
         fields = ('id', 'title_uz', 'title_ru', 'title_en', 'description_uz', 'description_ru', 'description_en', 'date', 'photo', 'views', )
         model = models.News
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['description_uz'] = strip_tags(instance.description)
-        data['description_ru'] = strip_tags(instance.description)
-        data['description_en'] = strip_tags(instance.description)
-        return data
 
 
 class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'name', 'phon_number', 'email', 'message', 'organization', 'lavozim', 'theme', )
+        fields = ('id', 'name', 'phon_number', 'email', 'message', 'organization', 'lavozim', )
         model = models.Contact
 
 
@@ -199,24 +151,19 @@ class FaqSerializer(serializers.ModelSerializer):
         fields = ('question_uz', 'question_ru', 'question_en', 'answer_uz', 'answer_ru', 'answer_en',)
         model = models.Faq
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['answer_uz'] = strip_tags(instance.description)
-        data['answer_ru'] = strip_tags(instance.description)
-        data['answer_en'] = strip_tags(instance.description)
-        return data
+
 
 
 class BannerSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('title_uz', 'title_ru', 'title_en', 'subtitle_uz', 'subtitle_ru', 'subtitle_en', 'button_uz', 'button_ru', 'button_en', 'video_banner', 'link')
+        fields = ('title_uz', 'title_ru', 'title_en', 'subtitle_uz', 'subtitle_ru', 'subtitle_en', 'button_uz', 'button_ru', 'button_en', 'video_banner', 'link', 'login_text')
         model = models.Banner
 
 
 class WebcontactSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('phone', 'email', 'address_uz', 'address_ru', 'address_en',)
+        fields = ('phone', 'email', 'address_uz', 'address_ru', 'address_en', 'facebook', 'instagram', 'telegram', 'youtube')
         model = models.Webcontact
 

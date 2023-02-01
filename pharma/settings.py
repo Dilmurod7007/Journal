@@ -37,6 +37,10 @@ INSTALLED_APPS = [
 
 ]
 
+
+# AUTH_USER_MODEL = 'pharmapolls.User'
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':[
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',

@@ -170,7 +170,7 @@ class NewsDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.NewsSerializer
 
 
-class ContactList(ListCreateAPIView):
+class ContactCreate(ListCreateAPIView):
     queryset = models.Contact.objects.all()
     serializer_class = serializers.ContactSerializer
 
@@ -181,7 +181,7 @@ class ContactDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.ContactSerializer
 
 
-class FaqList(ListCreateAPIView):
+class FaqList(generics.ListAPIView):
     queryset = models.Faq.objects.all()
     serializer_class = serializers.FaqSerializer
 
@@ -191,6 +191,6 @@ class BannerList(generics.ListAPIView):
     serializer_class = serializers.BannerSerializer
 
 
-class WebcontactList(ListCreateAPIView):
+class WebcontactList(generics.ListAPIView):
     queryset = models.Webcontact.objects.all()
     serializer_class = serializers.WebcontactSerializer
