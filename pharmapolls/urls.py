@@ -30,5 +30,6 @@ urlpatterns = [
     path("faq/", views.FaqList.as_view()),
     path("banner/", views.BannerList.as_view()),
     path("webcontact/", views.WebcontactList.as_view()),
+    path('filter/<int:param1>/<int:param2>/<str:string>/', views.SearchAPIView.as_view()),
 
 ]

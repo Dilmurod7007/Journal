@@ -12,6 +12,16 @@ class SubdivisionSerializer(serializers.ModelSerializer):
 
 
 
+class OrganizationSearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', )
+        model = models.Organization
+
+
+
+
+
 class OrganizationSerializer(serializers.ModelSerializer):
     subdivisions = SubdivisionSerializer(many=True, source='organization_subdivision')
 
@@ -19,6 +29,13 @@ class OrganizationSerializer(serializers.ModelSerializer):
         fields = ('id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website',
                   'image', 'logo', 'issn', 'top', 'number_table', 'subdivisions')
         model = models.Organization
+
+
+class AuthorSearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id', 'name_uz', 'name_ru', 'name_en')
+        model = models.Author
 
 
 
@@ -124,6 +141,7 @@ class VideoSerializer(serializers.ModelSerializer):
 
 
 class Video_GallerySerializer(serializers.ModelSerializer):
+    video = VideoSerializer()
 
     class Meta:
         fields = ('id', 'video', 'videourl', 'title', )

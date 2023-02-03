@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from django.db.models import Q
 from django.db.models import Count
 from .permissions import IsAuthenticatedOrReadOnly
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class OrganizationList(generics.ListAPIView):
@@ -194,3 +196,24 @@ class BannerList(generics.ListAPIView):
 class WebcontactList(generics.ListAPIView):
     queryset = models.Webcontact.objects.all()
     serializer_class = serializers.WebcontactSerializer
+
+
+
+class SearchAPIView(generics.ListAPIView):
+    queryset = models.Author.objects.all()
+    serializer_class = serializers.AuthorSerializer
+    search_fields = ['name_uz']
+    filter_backends = (filters.SearchFilter,)
+
+    def get(self, request, param1, param2, string):
+        print(string)   
+
+        if param1 == 1:
+            if param2 == 4:
+                response = models.Organization.objects.filter(name__contains=string)
+                serializer = serializers.OrganizationSearchSerializer(response, many=True)
+
+        
+        serializer = serializers.AuthorSearchSerializer(response, many=True)
+        return Response(serializer.data)
+
