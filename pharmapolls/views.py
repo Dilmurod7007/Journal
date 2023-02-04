@@ -268,7 +268,8 @@ class SearchAPIView(generics.ListAPIView):
                 response2 = models.Statya.objects.filter(author__name_ru__contains=string)
                 response3 = models.Statya.objects.filter(author__name_en__contains=string)
                 response = response1 | response2 | response3
-                serializer = serializers.StatyaSearchSerializer(response, many=True)    
+                serializer = serializers.StatyaSearchSerializer(response, many=True) 
+            else:   
                 return Response(payload, status=status.HTTP_303_SEE_OTHER)       
         elif param1 == 4:
             if param2 == 7:
@@ -280,6 +281,7 @@ class SearchAPIView(generics.ListAPIView):
             if param2 == 5:
                 response = models.Author.objects.filter(article_author__name__contains=string)
                 serializer = serializers.AuthorSearchSerializer(response, many=True)
+            else:
                 return Response(payload, status=status.HTTP_303_SEE_OTHER)   
         else:
             return Response(payload, status=status.HTTP_303_SEE_OTHER)   
