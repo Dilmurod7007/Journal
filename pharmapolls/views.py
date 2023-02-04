@@ -281,7 +281,7 @@ class SearchAPIView(generics.ListAPIView):
                 response3 = models.Author.objects.filter(name_en__contains=string)
                 response = response1 | response2 | response3
                 serializer = serializers.AuthorSearchSerializer(response, many=True)
-            if param2 == 5:
+            elif param2 == 5:
                 response = models.Author.objects.filter(article_author__name__contains=string)
                 serializer = serializers.AuthorSearchSerializer(response, many=True)
             else:
