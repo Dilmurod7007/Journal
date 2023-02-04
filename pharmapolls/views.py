@@ -222,7 +222,10 @@ class SearchAPIView(generics.ListAPIView):
                 response = models.Organization.objects.filter(issn__contains=string)
                 serializer = serializers.OrganizationSearchSerializer(response, many=True)
             elif param2 == 10:
-                response = models.Organization.objects.filter(adress__contains=string)
+                response1 = models.Organization.objects.filter(adress_uz__contains=string)
+                response2 = models.Organization.objects.filter(adress_en__contains=string)
+                response3 = models.Organization.objects.filter(adress_ru__contains=string)
+                response = response1 | response2 | response3
                 serializer = serializers.OrganizationSearchSerializer(response, many=True)
             else:
                 return Response(payload, status=status.HTTP_303_SEE_OTHER)   
