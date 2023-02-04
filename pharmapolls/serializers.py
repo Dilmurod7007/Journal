@@ -15,8 +15,9 @@ class SubdivisionSerializer(serializers.ModelSerializer):
 class OrganizationSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'name_uz', 'name_ru', 'name_en', )
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'phon_number', 'issn', 'adress')
         model = models.Organization
+
 
 
 
@@ -55,6 +56,18 @@ class AuthorSerializer(serializers.ModelSerializer):
         data['count_download'] = article["downloadview__sum"]
         data['count_article'] = str(count_article)
         return data
+
+
+
+class StatyaSearchSerializer(serializers.ModelSerializer):
+    author = AuthorSearchSerializer(read_only=True, many=True)
+
+    class Meta:
+        fields = ('id', 'author', 'name', 'date', 'keyword', )
+        model = models.Statya
+
+
+
 
 
 class StatyaSerializer(serializers.ModelSerializer):
@@ -101,6 +114,18 @@ class JurnalDetailSerializer(serializers.ModelSerializer):
         fields = ('id','organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'date', 'downloadview', 'views',
                   'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image', 'articles', )
         model = models.Jurnal
+
+
+
+
+
+class JurnalSearchSerializer(serializers.ModelSerializer):
+    organization = OrganizationSearchSerializer()
+
+    class Meta:
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'date', 'keyword', 'organization')
+        model = models.Jurnal
+
 
 
 
