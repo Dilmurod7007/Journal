@@ -2,6 +2,7 @@ from rest_framework import serializers
 from . import models
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
+import datetime
 
 class SubdivisionSerializer(serializers.ModelSerializer):
     organization = serializers.StringRelatedField()
@@ -131,7 +132,7 @@ class JurnalSearchSerializer(serializers.ModelSerializer):
 class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ['name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'pdf_file', 'keyword', 'image']
+        fields = ['name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image']
         model = models.Jurnal
         extra_kwargs = {'name': {'required': False}} 
 
@@ -143,8 +144,27 @@ class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
-        print(validated_data)
-        return super().create(validated_data)
+        print(self.context['request'].user)
+        journal_data={
+        "name_uz":validated_data.pop('name_uz'), 
+        "name_ru":validated_data.pop('name_ru'),
+        "name_en":validated_data.pop('name_en'),
+        "description_uz":validated_data.pop("description_uz"),
+        "description_ru":validated_data.pop("description_ru"),
+        "description_en":validated_data.pop("description_en"),
+        "pdf_file":validated_data.pop("pdf_file"),
+        "keyword_uz":validated_data.pop("keyword_uz"),
+        "keyword_ru":validated_data.pop("keyword_ru"),
+        "keyword_en":validated_data.pop("keyword_en"),
+        "image":validated_data.pop("image"),
+        "date": datetime.datetime.today(),
+        "organization": self.context['request'].user.organization
+        } 
+
+        journal = models.Jurnal.objects.create(**journal_data)
+
+
+        return journal
 
 
 
