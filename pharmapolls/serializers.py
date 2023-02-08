@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from . import models
 from django.db.models import Sum
-
+from django.utils.translation import gettext_lazy as _
 
 class SubdivisionSerializer(serializers.ModelSerializer):
     organization = serializers.StringRelatedField()
@@ -128,6 +128,26 @@ class JurnalSearchSerializer(serializers.ModelSerializer):
 
 
 
+class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ['name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'pdf_file', 'keyword', 'image']
+        model = models.Jurnal
+        extra_kwargs = {'name': {'required': False}} 
+
+    def update(self, instance, validated_data):
+
+        for i in validated_data:
+            setattr(instance, i, validated_data[i])
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+        print(validated_data)
+        return super().create(validated_data)
+
+
+
 
 class JurnalSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
@@ -209,4 +229,35 @@ class WebcontactSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('phone', 'email', 'address_uz', 'address_ru', 'address_en', 'facebook', 'instagram', 'telegram', 'youtube')
         model = models.Webcontact
+
+
+
+
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(max_length=32, style={'input_type': 'password'}, write_only=True)
+
+    class Meta:
+        model = models.User
+        fields = ('email', 'organization', 'password', 'password2')
+
+    def create(self, validated_data):
+        password = validated_data.get('password')
+        password2 = validated_data.pop('password2')
+        if password != password2:
+            raise serializers.ValidationError(_('Parollar mos kelmadi, Iltimos qayta urinib ko\'ring!!!'))
+        else:
+            user = super(UserRegisterSerializer, self).create(validated_data)
+            user.set_password(password)
+            user.is_active = True
+            user.user_type = 1
+            user.save()
+            return user
+
+
+
+
+
+
+
 

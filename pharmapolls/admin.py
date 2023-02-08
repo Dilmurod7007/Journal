@@ -34,6 +34,7 @@ class AuthorAdmin(TranslationAdmin):
 
 class JurnalAdmin(TranslationAdmin):
     model = Jurnal
+    list_display = ['id', 'name', 'organization']
 
 
 class SubdivisionAdmin(TranslationAdmin):
@@ -55,6 +56,10 @@ class BannerAdmin(TranslationAdmin):
 class WebcontactAdmin(TranslationAdmin):
     model = Webcontact
 
+
+@admin.register(models.User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['id', 'email',  'is_active']
 
 
 

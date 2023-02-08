@@ -31,5 +31,17 @@ urlpatterns = [
     path("banner/", views.BannerList.as_view()),
     path("webcontact/", views.WebcontactList.as_view()),
     path('filter/<int:param1>/<int:param2>/<str:string>/', views.SearchAPIView.as_view()),
+    path('auth/login/', views.UserLoginAPIView.as_view(), name='login'),
+    path('auth/register/', views.UserRegisterAPIView.as_view(), name='register'),
+    path('auth/logout/', views.UserLogoutAPIView.as_view(), name='logout'),
+    path('user/dashboard/', views.UserDashboardAPIView.as_view(), name='user_dashboard'),
+    path('user/journal_list/', views.UserJournalListAPIView.as_view(), name="user_journals"),
+    path('user/journal_create/', views.UserJournalCreateAPIView.as_view(), name="journal_create"),
+    path('user/journal_delete/<int:pk>/', views.UserJournalDeleteAPIView.as_view(), name='journal_delete'),
+    path('user/journal_update/<int:pk>/', views.UserJournalUpdateAPIView.as_view(), name='journal_update'),
+    path('user/article_list', views.UserArticleListAPIView.as_view(), name="user_article"),
+    path('user/conference_list/', views.UserConferenceListAPIView.as_view(), name='user_conference'),
+    path('user/seminar_list/', views.UserSeminarListAPIView.as_view(), name='user_seminar'),
+
 
 ]

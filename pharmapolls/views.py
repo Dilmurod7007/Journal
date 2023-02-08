@@ -1,7 +1,9 @@
 from . import serializers
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework import generics, permissions
 from . import models
+from django.contrib.auth import logout
 from . import paginations
 import datetime
 from rest_framework import generics, status
@@ -9,8 +11,12 @@ from rest_framework.response import Response
 from django.db.models import Q
 from django.db.models import Count
 from .permissions import IsAuthenticatedOrReadOnly
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.authtoken.models import Token
+from django.utils.translation import gettext_lazy as _
+from rest_framework.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied
+
+
 
 
 class OrganizationList(generics.ListAPIView):
@@ -25,7 +31,6 @@ class PopOrganizationList(generics.ListAPIView):
 
 
 class OrganizationDetail(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly, )
     queryset = models.Organization.objects.all()
     serializer_class = serializers.OrganizationSerializer
 
@@ -43,18 +48,17 @@ class AuthorDetail(generics.RetrieveAPIView):
 
 
 class JurnalList(generics.ListAPIView):
-    queryset = models.Jurnal.objects.all()#Jurnal listni date bo'yicha qilish kere
+    queryset = models.Jurnal.objects.filter(archive=False)
     serializer_class = serializers.JurnalSerializer
     pagination_class = paginations.PaginateBy12
 
 
 class PopularJurnalList(generics.ListAPIView):
-    queryset = models.Jurnal.objects.all().order_by('-downloadview')[:12]
+    queryset = models.Jurnal.objects.filter(archive=False).order_by('-downloadview')[:12]
     serializer_class = serializers.JurnalSerializer
 
 
 class JurnalDetail(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = models.Jurnal.objects.all()
     serializer_class = serializers.JurnalDetailSerializer
 
@@ -65,7 +69,6 @@ class SubdivisionList(ListCreateAPIView):
 
 
 class SubdivisionDetail(RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = models.Subdivision.objects.all()
     serializer_class = serializers.SubdivisionSerializer
 
@@ -82,7 +85,7 @@ class StatisticsApiView(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         context = {'request': request}
-        journals = models.Jurnal.objects.all().count()
+        journals = models.Jurnal.objects.filter(archive=False).count()
         authors = models.Author.objects.all().count()
         organizations = models.Organization.objects.all().count()
         seminars = models.Seminar.objects.all().count()
@@ -102,7 +105,6 @@ class ConferenceList(ListCreateAPIView):
 
 
 class ConferenceDetail(RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = models.Conference.objects.all()
     serializer_class = serializers.ConferenceSerializer
 
@@ -134,7 +136,6 @@ class SeminarList(ListCreateAPIView):
 
 
 class SeminarDetail(RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = models.Seminar.objects.all()
     serializer_class = serializers.SeminarSerializer
 
@@ -145,7 +146,6 @@ class VideoList(generics.ListAPIView):
 
 
 class VideoDetail(RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = models.Video.objects.all()
     serializer_class = serializers.VideoSerializer
 
@@ -156,7 +156,6 @@ class Video_GalleryList(ListCreateAPIView):
 
 
 class Video_GalleryDetail(RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = models.Video_Gallery.objects.all()
     serializer_class = serializers.Video_GallerySerializer
 
@@ -231,28 +230,28 @@ class SearchAPIView(generics.ListAPIView):
                 return Response(payload, status=status.HTTP_303_SEE_OTHER)   
         elif param1 == 2:
             if param2 == 1:
-                response1 = models.Jurnal.objects.filter(name_uz__contains=string)
-                response2 = models.Jurnal.objects.filter(name_ru__contains=string)
-                response3 = models.Jurnal.objects.filter(name_en__contains=string)
+                response1 = models.Jurnal.objects.filter(archive=False, name_uz__contains=string)
+                response2 = models.Jurnal.objects.filter(archive=False, name_ru__contains=string)
+                response3 = models.Jurnal.objects.filter(archive=False, name_en__contains=string)
                 response = response1 | response2 | response3
                 serializer = serializers.JurnalSearchSerializer(response, many=True)
             elif param2 == 2:
-                response = models.Jurnal.objects.filter(date__contains=string)
+                response = models.Jurnal.objects.filter(archive=False, date__contains=string)
                 serializer = serializers.JurnalSearchSerializer(response, many=True)
             elif param2 == 3:
-                response1 = models.Jurnal.objects.filter(keyword_uz__contains=string)
-                response2 = models.Jurnal.objects.filter(keyword_ru__contains=string)
-                response3 = models.Jurnal.objects.filter(keyword_en__contains=string)
+                response1 = models.Jurnal.objects.filter(archive=False, keyword_uz__contains=string)
+                response2 = models.Jurnal.objects.filter(archive=False, keyword_ru__contains=string)
+                response3 = models.Jurnal.objects.filter(archive=False, keyword_en__contains=string)
                 response = response1 | response2 | response3
                 serializer = serializers.JurnalSearchSerializer(response, many=True)
             elif param2 == 4:
-                response1 = models.Jurnal.objects.filter(organization__name_uz__contains=string)
-                response2 = models.Jurnal.objects.filter(organization__name_ru__contains=string)
-                response3 = models.Jurnal.objects.filter(organization__name_en__contains=string)
+                response1 = models.Jurnal.objects.filter(archive=False, organization__name_uz__contains=string)
+                response2 = models.Jurnal.objects.filter(archive=False, organization__name_ru__contains=string)
+                response3 = models.Jurnal.objects.filter(archive=False, organization__name_en__contains=string)
                 response = response1 | response2 | response3
                 serializer = serializers.JurnalSearchSerializer(response, many=True)
             elif param2 == 5:
-                response = models.Jurnal.objects.filter(journal_article__name__contains=string)
+                response = models.Jurnal.objects.filter(archive=False, journal_article__name__contains=string)
                 serializer = serializers.JurnalSearchSerializer(response, many=True)
             else:
                 return Response(payload, status=status.HTTP_303_SEE_OTHER)   
@@ -291,4 +290,161 @@ class SearchAPIView(generics.ListAPIView):
 
             
         return Response(serializer.data)
+
+
+
+
+class UserLoginAPIView(APIView):
+    queryset = models.User.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        error_message = _("Siz ro'yxatdan o'tmagansiz, Iltimos ro'yxatdan o'ting!!!")
+        try:
+            user = models.User.objects.get(email=email)
+        except models.User.DoesNotExist:
+            return Response({'error_message': error_message}, status=status.HTTP_404_NOT_FOUND)
+        token = Token.objects.get_or_create(user=user)[0]
+        if user.check_password(password) is False:
+            raise ValidationError({"message": _("Noto'g'ri parol kiritdingiz")})
+        if user:
+            if user.is_active:
+                return Response({
+                    'email': email,
+                    'token': token.key,
+                    'user_type': user.organization.name
+                })
+            else:
+                raise ValidationError({'error_message': _('Hisob faol emas')})
+        else:
+            raise ValidationError({'error_message': _('Hisob mavjud emas')})
+
+
+class UserRegisterAPIView(generics.CreateAPIView):
+    serializer_class = serializers.UserRegisterSerializer
+    queryset = models.User.objects.all()
+
+
+class UserLogoutAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get(self, request, *args, **kwargs):
+        request.user.auth_token.delete()
+        logout(request)
+        return Response({'success_message': _('Siz hisobdan muvaffaqiyatli chiqdingiz!!!')})
+
+
+class UserDashboardAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = models.User.objects.all()
+    serializer_class = serializers.NewsSerializer
+
+    def get(self, request, *args, **kwargs):
+        organization = self.request.user.organization
+        journals = models.Jurnal.objects.filter(organization=organization, archive=False)
+        article = models.Statya.objects.filter(jurnal__in=journals)
+        conference = models.Conference.objects.filter(organization=organization)
+        seminar = models.Seminar.objects.filter(organization=organization)
+
+        payload = {
+        "statistics": {
+            'journals': journals.count(),
+            'article': article.count(),
+            'conference': conference.count(),
+            'seminar': seminar.count(),
+            },
+        "contacts": {
+            'adress': organization.adress,
+            'phone_number': organization.phon_number,
+            'website': organization.website,
+            'ISSN': organization.issn,   
+        }}
+
+        return Response(payload, status=status.HTTP_200_OK)
+
+
+class UserJournalListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.JurnalSerializer
+    pagination_class = paginations.PaginateBy6
+
+    def get_queryset(self):
+        return models.Jurnal.objects.filter(organization=self.request.user.organization, archive=False)
+
+
+
+class UserJournalCreateAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.JurnalUpdateCreateSerializer
+        
+
+
+class UserJournalDeleteAPIView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_queryset(self):
+        queryset = models.Jurnal.objects.all()
+        return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        journals = models.Jurnal.objects.filter(organization=self.request.user.organization) or None
+        instance = self.get_object()
+        if not instance in journals:
+            raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
+        instance.archive = True
+        instance.save()
+        serializer = serializers.JurnalSerializer(instance)
+        return Response(serializer.data)
+
+
+
+class UserJournalUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.JurnalUpdateCreateSerializer
+    queryset = models.Jurnal.objects.all()
+
+    def get_queryset(self):
+        queryset = models.Jurnal.objects.all()
+        return queryset 
+
+
+    def perform_update(self, serializer):
+        obj = self.get_object()
+        if self.request.user.organization != obj.organization:
+            raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
+        serializer.save()
+
+
+
+
+class UserArticleListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.StatyaSerializer
+    pagination_class = paginations.PaginateBy6
+
+    def get_queryset(self):
+        journals = models.Jurnal.objects.filter(organization=self.request.user.organization)
+        return models.Statya.objects.filter(jurnal__in=journals)
+
+
+class UserConferenceListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.ConferenceSerializer
+    pagination_class = paginations.PaginateBy6
+
+    def get_queryset(self):
+        return models.Conference.objects.filter(organization=self.request.user.organization)
+
+
+class UserSeminarListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.SeminarSerializer
+    pagination_class = paginations.PaginateBy6
+
+    def get_queryset(self):
+        return models.Seminar.objects.filter(organization=self.request.user.organization)
+
+
+
 
