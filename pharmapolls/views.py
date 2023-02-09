@@ -428,6 +428,16 @@ class UserArticleListAPIView(generics.ListAPIView):
         return models.Statya.objects.filter(jurnal__in=journals)
 
 
+
+
+
+
+
+
+
+
+
+
 class UserConferenceListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = serializers.ConferenceSerializer
