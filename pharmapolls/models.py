@@ -150,6 +150,8 @@ class Conference(models.Model):
     date = models.DateField()
     sponsor = models.CharField(max_length=250)
     archive = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
+
 
     def __str__(self):
         return self.name
@@ -165,6 +167,8 @@ class Seminar(models.Model):
     date = models.DateField()
     sponsor = models.CharField(max_length=250)
     archive = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
+
 
     def __str__(self):
         return self.name

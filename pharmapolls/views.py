@@ -15,6 +15,8 @@ from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from django.core.exceptions import PermissionDenied
+from django.db.models import Sum
+
 
 
 
@@ -48,7 +50,7 @@ class AuthorDetail(generics.RetrieveAPIView):
 
 
 class JurnalList(generics.ListAPIView):
-    queryset = models.Jurnal.objects.filter(archive=False)
+    queryset = models.Jurnal.objects.filter(archive=False).order_by('-id')
     serializer_class = serializers.JurnalSerializer
     pagination_class = paginations.PaginateBy12
 
@@ -350,12 +352,25 @@ class UserDashboardAPIView(generics.ListAPIView):
         payload = {
         "statistics": {
             'journals': journals.count(),
+            'journal_views': journals.aggregate(Sum('views'))['views__sum'],
+            'journal_downloadviews': journals.aggregate(Sum('downloadview'))['downloadview__sum'],
             'article': article.count(),
-            'conference': conference.count(),
-            'seminar': seminar.count(),
+            'article_views': article.aggregate(Sum('views'))['views__sum'],
+            'article_downloadviews': article.aggregate(Sum('downloadview'))['downloadview__sum'],
+            'conference': conference.filter(archive=False).count(),
+            'conference_views': conference.aggregate(Sum('views'))['views__sum'],
+            'conference_all': conference.count(),
+            'seminar': seminar.filter(archive=False).count(),
+            'seminar_views': seminar.aggregate(Sum('views'))['views__sum'],
+            'seminar_all': seminar.count(),
             },
         "contacts": {
-            'adress': organization.adress,
+            'organization_uz': self.request.user.organization.name_uz,
+            'organization_ru': self.request.user.organization.name_ru,
+            'organization_en': self.request.user.organization.name_en,
+            'adress_uz': organization.adress,
+            'adress_ru': organization.adress,
+            'adress_en': organization.adress,
             'phone_number': organization.phon_number,
             'website': organization.website,
             'ISSN': organization.issn,   
@@ -370,7 +385,7 @@ class UserJournalListAPIView(generics.ListAPIView):
     pagination_class = paginations.PaginateBy6
 
     def get_queryset(self):
-        return models.Jurnal.objects.filter(organization=self.request.user.organization, archive=False)
+        return models.Jurnal.objects.filter(organization=self.request.user.organization, archive=False).order_by('-id')
 
 
 
