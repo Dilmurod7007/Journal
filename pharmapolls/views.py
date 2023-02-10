@@ -445,10 +445,47 @@ class UserArticleListAPIView(generics.ListAPIView):
 
 
 
+class UserArticleCreateAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.ArticleUpdateCreateSerializer
 
 
 
 
+class UserArticleUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.ArticleUpdateCreateSerializer
+    queryset = models.Statya.objects.all()
+
+    def get_queryset(self):
+        queryset = models.Statya.objects.all()
+        return queryset 
+
+
+    def perform_update(self, serializer):
+        obj = self.get_object()
+        if self.request.user.organization != obj.jurnal.organization:
+            raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
+        serializer.save()
+
+
+class UserArticleDeleteAPIView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_queryset(self):
+        queryset = models.Statya.objects.all()
+        return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if self.request.user.organization != obj.jurnal.organization:
+            raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
+
+        print("What the fuck")
+        obj.archive = True
+        obj.save()
+        serializer = serializers.StatyaSerializer(obj)
+        return Response(serializer.data)
 
 
 

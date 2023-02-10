@@ -135,6 +135,8 @@ class Statya(models.Model):
     views = models.IntegerField(default=0)
     date = models.DateField()
     keyword = models.CharField(max_length=250)
+    archive = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.name

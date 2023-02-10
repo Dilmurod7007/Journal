@@ -37,6 +37,11 @@ class JurnalAdmin(TranslationAdmin):
     list_display = ['id', 'name', 'organization']
 
 
+class ArticleAdmin(TranslationAdmin):
+    model = Statya
+    list_display = ['id', 'name', 'jurnal', 'date']
+
+
 class SubdivisionAdmin(TranslationAdmin):
     model = Subdivision
 
@@ -66,9 +71,9 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(models.Organization, OrganizationAdmin)
 admin.site.register(models.Author, AuthorAdmin)
 admin.site.register(models.Jurnal, JurnalAdmin)
+admin.site.register(models.Statya, ArticleAdmin)
 admin.site.register(models.Contact)
 admin.site.register(models.Subdivision, SubdivisionAdmin)
-admin.site.register(models.Statya,)
 admin.site.register(models.Video, VideoGallerys,)
 admin.site.register(models.News, NewsAdmin)
 admin.site.register(models.Banner, BannerAdmin)

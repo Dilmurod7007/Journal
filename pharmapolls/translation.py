@@ -7,6 +7,11 @@ class OrganizationTranslationOptions(TranslationOptions):
     fields = ('name', 'description', 'adress', )
 
 
+@register(models.Statya)
+class StatyaTranslationOptions(TranslationOptions):
+    fields = ('name', )
+
+
 @register(models.Author)
 class AuthorTranslationOptions(TranslationOptions):
     fields = ('name', 'surname', 'family_name', 'description', 'work', )

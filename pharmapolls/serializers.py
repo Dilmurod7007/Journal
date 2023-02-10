@@ -69,43 +69,47 @@ class StatyaSearchSerializer(serializers.ModelSerializer):
 
 
 
+class ArticleForeignKeySerializer(serializers.PrimaryKeyRelatedField):
+    def get_queryset(self):
+        organization = self.context['request'].user.organization
+        return models.Jurnal.objects.filter(organization=organization)
+
 
 class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
+    jurnal = ArticleForeignKeySerializer()
 
     class Meta:
-        fields = ['name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image']
+        fields = ['name_uz', 'name_ru', 'name_en', 'date', 'language', 'jurnal', 'author', 'downloadfile']
         model = models.Statya
         extra_kwargs = {'name': {'required': False}} 
 
-    def update(self, instance, validated_data):
 
+    def update(self, instance, validated_data):
+        author = validated_data.pop("author")
         for i in validated_data:
             setattr(instance, i, validated_data[i])
+        instance.author.set(author)
         instance.save()
         return instance
 
     def create(self, validated_data):
-        print(self.context['request'].user)
-        journal_data={
+        language = validated_data.pop("language")
+        journal = validated_data.get("jurnal")
+        author = validated_data.get("author")
+
+        article_data={
         "name_uz":validated_data.pop('name_uz'), 
         "name_ru":validated_data.pop('name_ru'),
         "name_en":validated_data.pop('name_en'),
-        "description_uz":validated_data.pop("description_uz"),
-        "description_ru":validated_data.pop("description_ru"),
-        "description_en":validated_data.pop("description_en"),
-        "pdf_file":validated_data.pop("pdf_file"),
-        "keyword_uz":validated_data.pop("keyword_uz"),
-        "keyword_ru":validated_data.pop("keyword_ru"),
-        "keyword_en":validated_data.pop("keyword_en"),
-        "image":validated_data.pop("image"),
-        "date": datetime.datetime.today(),
-        "organization": self.context['request'].user.organization
+        "date": validated_data.pop("date"),
+        "language": language,
+        "jurnal": journal,
         } 
 
-        journal = models.Jurnal.objects.create(**journal_data)
+        article = models.Statya.objects.create(**article_data)
+        article.author.set(author)
 
-
-        return journal
+        return article
 
 
 
@@ -117,7 +121,7 @@ class StatyaSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
-        fields = ('id', 'author', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', )
+        fields = ('id', 'author', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', 'archive')
         model = models.Statya
 
 
@@ -173,7 +177,7 @@ class JurnalSearchSerializer(serializers.ModelSerializer):
 class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ['name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image', 'date']
+        fields = ['id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image', 'date']
         model = models.Jurnal
         extra_kwargs = {'name': {'required': False}} 
 
