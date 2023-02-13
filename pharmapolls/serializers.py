@@ -131,7 +131,7 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         print(validated_data)
         language = validated_data.pop("language")
         journal = validated_data.get("jurnal")
-        author = validated_data.pop("author")
+        author = validated_data.pop("author", [])
 
         article_data={
         "name_uz":validated_data.pop('name_uz'), 
