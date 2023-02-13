@@ -108,17 +108,25 @@ class ArticleForeignKeySerializer(serializers.PrimaryKeyRelatedField):
 
 class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
     jurnal = ArticleForeignKeySerializer()
+    author_ids = serializers.CharField(write_only=True)
+    # author = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        fields = ['name_uz', 'name_ru', 'name_en', 'date', 'language', 'keyword', 'jurnal', 'author', 'downloadfile']
+        fields = ['name_uz', 'name_ru', 'name_en', 'date', 'language', 'keyword', 'jurnal', 'downloadfile', 'author_ids']
         model = models.Statya
         extra_kwargs = {'name': {'required': False}} 
 
 
     def update(self, instance, validated_data):
         try:
-            author = validated_data.pop("author")
-            instance.author.set(author)
+            author = validated_data.pop("author_ids")
+            author = author.split(',')
+            instance.author.clear()
+            print(author)
+            for i in author:
+                instance.author.add(i)
+                
+            
         except:
             pass
         for i in validated_data:
@@ -131,7 +139,7 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         print(validated_data)
         language = validated_data.pop("language")
         journal = validated_data.get("jurnal")
-        author = validated_data.pop("author", [])
+        author = validated_data.pop("author_ids")
 
         article_data={
         "name_uz":validated_data.pop('name_uz'), 
@@ -145,8 +153,8 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         } 
 
         article = models.Statya.objects.create(**article_data)
+        author = author.split(',')
         for i in author:
-            print(i)
             article.author.add(i)
 
         return article

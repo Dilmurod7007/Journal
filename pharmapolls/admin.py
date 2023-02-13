@@ -38,6 +38,7 @@ class OrganizationAdmin(TranslationAdmin):
 
 class AuthorAdmin(TranslationAdmin):
     model = Author
+    list_display = ['id', 'name', 'surname', 'work']
 
 
 class JurnalAdmin(TranslationAdmin):
