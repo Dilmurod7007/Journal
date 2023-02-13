@@ -154,7 +154,6 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
 
 
 class StatyaSerializer(serializers.ModelSerializer):
-    jurnal = serializers.StringRelatedField()
     author = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
