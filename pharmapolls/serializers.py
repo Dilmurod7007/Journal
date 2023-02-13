@@ -85,10 +85,14 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        author = validated_data.pop("author")
+        try:
+            author = validated_data.pop("author")
+            instance.author.set(author)
+        except:
+            pass
         for i in validated_data:
             setattr(instance, i, validated_data[i])
-        instance.author.set(author)
+        
         instance.save()
         return instance
 
@@ -104,6 +108,7 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         "date": validated_data.pop("date"),
         "language": language,
         "jurnal": journal,
+        "downloadfile": validated_data.pop('downloadfile'),
         } 
 
         article = models.Statya.objects.create(**article_data)
