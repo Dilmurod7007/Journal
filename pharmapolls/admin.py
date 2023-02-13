@@ -8,9 +8,17 @@ class VidioInline(admin.StackedInline):
     model = models.Video_Gallery
 
 
-class VideoGallerys(admin.ModelAdmin):
+@admin.register(models.Video)
+class VideoAdmin(TranslationAdmin):
 
+    list_display = ['title', 'organization', 'views']
     inlines = [VidioInline]
+
+
+@admin.register(models.Video_Gallery)
+class VideoGalleryAdmin(TranslationAdmin):
+
+    list_display = ['title', 'video']
 
 
 @admin.register(models.Conference)
@@ -74,7 +82,6 @@ admin.site.register(models.Jurnal, JurnalAdmin)
 admin.site.register(models.Statya, ArticleAdmin)
 admin.site.register(models.Contact)
 admin.site.register(models.Subdivision, SubdivisionAdmin)
-admin.site.register(models.Video, VideoGallerys,)
 admin.site.register(models.News, NewsAdmin)
 admin.site.register(models.Banner, BannerAdmin)
 admin.site.register(models.Faq, FaqAdmin)

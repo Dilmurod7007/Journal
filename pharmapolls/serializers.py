@@ -21,9 +21,6 @@ class OrganizationSearchSerializer(serializers.ModelSerializer):
 
 
 
-
-
-
 class OrganizationSerializer(serializers.ModelSerializer):
     subdivisions = SubdivisionSerializer(many=True, source='organization_subdivision')
 
@@ -68,6 +65,13 @@ class StatyaSearchSerializer(serializers.ModelSerializer):
         model = models.Statya
 
 
+class ArticleListForSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Statya
+        fields = ['id', 'name_uz', 'name_ru', 'name_en']
+
+
+
 
 class ArticleForeignKeySerializer(serializers.PrimaryKeyRelatedField):
     def get_queryset(self):
@@ -79,7 +83,7 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
     jurnal = ArticleForeignKeySerializer()
 
     class Meta:
-        fields = ['name_uz', 'name_ru', 'name_en', 'date', 'language', 'jurnal', 'author', 'downloadfile']
+        fields = ['name_uz', 'name_ru', 'name_en', 'date', 'language', 'keyword', 'jurnal', 'author', 'downloadfile']
         model = models.Statya
         extra_kwargs = {'name': {'required': False}} 
 
@@ -107,6 +111,7 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         "name_en":validated_data.pop('name_en'),
         "date": validated_data.pop("date"),
         "language": language,
+        "keyword": validated_data.pop('keyword'),
         "jurnal": journal,
         "downloadfile": validated_data.pop('downloadfile'),
         } 
@@ -126,7 +131,7 @@ class StatyaSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True, many=True)
 
     class Meta:
-        fields = ('id', 'author', 'name', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', 'archive')
+        fields = ('id', 'author', 'name_uz', 'name_ru', 'name_en', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', 'archive')
         model = models.Statya
 
 
@@ -167,6 +172,11 @@ class JurnalDetailSerializer(serializers.ModelSerializer):
         model = models.Jurnal
 
 
+
+class UserJournalListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Jurnal
+        fields = ['id', 'name_uz', 'name_ru', 'name_en']
 
 
 

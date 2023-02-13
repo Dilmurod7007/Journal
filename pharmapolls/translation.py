@@ -56,3 +56,13 @@ class BannerTranslationOptions(TranslationOptions):
 class WebcontactTranslationOptions(TranslationOptions):
     fields = ('address', )
 
+
+@register(models.Video)
+class VideoTranslationOptions(TranslationOptions):
+    fields = ('title', 'organization')
+
+
+@register(models.Video_Gallery)
+class VideoGalleryTranslationOptions(TranslationOptions):
+    fields = ('title', )
+

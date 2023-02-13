@@ -389,6 +389,14 @@ class UserJournalListAPIView(generics.ListAPIView):
 
 
 
+class UserJournalListForSearchAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.UserJournalListSerializer
+
+    def get_queryset(self):
+        return models.Jurnal.objects.filter(organization=self.request.user.organization, archive=False).order_by('-id')
+
+
 class UserJournalCreateAPIView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = serializers.JurnalUpdateCreateSerializer
@@ -443,6 +451,14 @@ class UserArticleListAPIView(generics.ListAPIView):
         return models.Statya.objects.filter(jurnal__in=journals)
 
 
+class UserArticleForSearchListAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.ArticleListForSearchSerializer
+
+    def get_queryset(self):
+        journals = models.Jurnal.objects.filter(organization=self.request.user.organization)
+        article = models.Statya.objects.filter(jurnal__in=journals, archive=False).order_by('-id')
+        return article
 
 
 class UserArticleCreateAPIView(generics.CreateAPIView):
