@@ -63,6 +63,27 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 
+class AuthorForUserSearchSerializer(serializers.ModelSerializer):
+    fio_uz = serializers.SerializerMethodField()
+    fio_ru = serializers.SerializerMethodField()
+    fio_en = serializers.SerializerMethodField()
+
+
+    def get_fio_uz(self, obj):
+        return f'{obj.name_uz} {obj.surname_uz} {obj.family_name_uz}'
+
+    def get_fio_ru(self, obj):
+        return f'{obj.name_ru} {obj.surname_ru} {obj.family_name_ru}'    
+
+    def get_fio_en(self, obj):
+        return f'{obj.name_en} {obj.surname_en} {obj.family_name_en}'      
+
+    class Meta:
+        model = models.Author
+        fields = ['id', 'fio_uz', 'fio_ru', 'fio_en']
+
+
+
 class StatyaSearchSerializer(serializers.ModelSerializer):
     author = AuthorSearchSerializer(read_only=True, many=True)
 

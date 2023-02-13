@@ -448,7 +448,7 @@ class UserArticleListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         journals = models.Jurnal.objects.filter(organization=self.request.user.organization)
-        return models.Statya.objects.filter(jurnal__in=journals)
+        return models.Statya.objects.filter(jurnal__in=journals, archive=False).order_by('-id')
 
 
 class UserArticleForSearchListAPIView(generics.ListAPIView):
@@ -529,5 +529,14 @@ class UserAuthorCreateAPIView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     queryset = models.Author.objects.all()
     serializer_class = serializers.AuthorSerializer
+
+
+
+class UserAuthorForSearchAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.AuthorForUserSearchSerializer
+
+    def get_queryset(self):
+        return models.Author.objects.all().order_by('-id')
 
 
