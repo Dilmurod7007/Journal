@@ -461,9 +461,16 @@ class UserArticleForSearchListAPIView(generics.ListAPIView):
         return article
 
 
+class UserArticleDetailAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = models.Statya.objects.all()
+    serializer_class = serializers.StatyaSerializer
+
+
 class UserArticleCreateAPIView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = serializers.ArticleUpdateCreateSerializer
+
 
 
 
@@ -524,11 +531,22 @@ class UserSeminarListAPIView(generics.ListAPIView):
         return models.Seminar.objects.filter(organization=self.request.user.organization)
 
 
-
-class UserArticleDetailAPIView(generics.RetrieveAPIView):
+class UserSeminarDeleteAPIView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
-    queryset = models.Statya.objects.all()
-    serializer_class = serializers.StatyaSerializer
+    queryset = models.Seminar.objects.all()
+    serializer_class = serializers.SeminarSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if self.request.user.organization != obj.organization:
+            raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
+
+        obj.archive = True
+        obj.save()
+        serializer = serializers.SeminarSerializer(obj)
+        return Response(serializer.data)
+
+
 
 
 

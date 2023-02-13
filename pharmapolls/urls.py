@@ -48,6 +48,7 @@ urlpatterns = [
     path('user/article_delete/<int:pk>/', views.UserArticleDeleteAPIView.as_view(), name="user_article_delete"),
     path('user/conference_list/', views.UserConferenceListAPIView.as_view(), name='user_conference'),
     path('user/seminar_list/', views.UserSeminarListAPIView.as_view(), name='user_seminar'),
+    path('user/seminar_delete/<int:pk>/', views.UserSeminarDeleteAPIView.as_view(), name='user_seminar_delete'),
     path('user/author_create/', views.UserAuthorCreateAPIView.as_view(), name='user_author_create'),
     path('user/author_for_search/', views.UserAuthorForSearchAPIView.as_view(), name='user_author_for_search')
 

@@ -128,9 +128,10 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
+        print(validated_data)
         language = validated_data.pop("language")
         journal = validated_data.get("jurnal")
-        author = validated_data.get("author")
+        author = validated_data.pop("author")
 
         article_data={
         "name_uz":validated_data.pop('name_uz'), 
@@ -144,12 +145,11 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         } 
 
         article = models.Statya.objects.create(**article_data)
-        article.author.set(author)
+        for i in author:
+            print(i)
+            article.author.add(i)
 
         return article
-
-
-
 
 
 
@@ -250,7 +250,6 @@ class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
 
 
         return journal
-
 
 
 
