@@ -525,6 +525,13 @@ class UserSeminarListAPIView(generics.ListAPIView):
 
 
 
+class UserArticleDetailAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = models.Statya.objects.all()
+    serializer_class = serializers.StatyaSerializer
+
+
+
 class UserAuthorCreateAPIView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     queryset = models.Author.objects.all()

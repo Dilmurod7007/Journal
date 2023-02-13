@@ -41,6 +41,7 @@ urlpatterns = [
     path('user/journal_update/<int:pk>/', views.UserJournalUpdateAPIView.as_view(), name='user_journal_update'),
     path('user/journal_delete/<int:pk>/', views.UserJournalDeleteAPIView.as_view(), name='user_journal_delete'),
     path('user/article_list', views.UserArticleListAPIView.as_view(), name="user_article"),
+    path('user/article/<int:pk>', views.UserArticleDetailAPIView.as_view(), name='user_article_detail'),
     path('user/article_list_for_search/', views.UserArticleForSearchListAPIView.as_view(), name='user_article_for_search'),
     path('user/article_create/', views.UserArticleCreateAPIView.as_view(), name="user_article_create"),
     path('user/article_update/<int:pk>/', views.UserArticleUpdateAPIView.as_view(), name="user_article_update"),
