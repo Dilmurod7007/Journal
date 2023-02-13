@@ -525,4 +525,9 @@ class UserSeminarListAPIView(generics.ListAPIView):
 
 
 
+class UserAuthorCreateAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = models.Author.objects.all()
+    serializer_class = serializers.AuthorSerializer
+
 

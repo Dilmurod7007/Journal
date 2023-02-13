@@ -40,11 +40,11 @@ class AuthorSearchSerializer(serializers.ModelSerializer):
 
 
 class AuthorSerializer(serializers.ModelSerializer):
-    count_download = serializers.CharField(write_only=True)
-    count_article = serializers.CharField(write_only=True)
+    count_download = serializers.CharField(write_only=True, required=False)
+    count_article = serializers.CharField(write_only=True, required=False)
 
     class Meta:
-        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'surname_uz', 'surname_ru', 'surname_en', 'family_name_uz', 'family_name_ru', 'family_name_en', 'description_uz', 'description_ru', 'description_en', 'work_uz', 'work_ru', 'work_en', 'count_author', 'count_download', 'count_article', 'image')
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'surname_uz', 'surname_ru', 'surname_en', 'family_name_uz', 'family_name_ru', 'family_name_en', 'description_uz', 'description_ru', 'description_en', 'work_uz', 'work_ru', 'work_en', 'count_author', 'count_download', 'count_article', 'image', 'created_by')
         model = models.Author
 
     def to_representation(self, instance):
@@ -54,6 +54,12 @@ class AuthorSerializer(serializers.ModelSerializer):
         data['count_download'] = article["downloadview__sum"]
         data['count_article'] = str(count_article)
         return data
+
+    def create(self, validated_data):
+        author = models.Author.objects.create(**validated_data)
+        author.created_by = self.context['request'].user
+        author.save()
+        return author
 
 
 
@@ -204,7 +210,6 @@ class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
-        print(self.context['request'].user)
         journal_data={
         "name_uz":validated_data.pop('name_uz'), 
         "name_ru":validated_data.pop('name_ru'),
