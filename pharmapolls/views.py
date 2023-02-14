@@ -61,7 +61,7 @@ class PopularJurnalList(generics.ListAPIView):
 
 
 class JurnalDetail(generics.RetrieveAPIView):
-    queryset = models.Jurnal.objects.all()
+    queryset = models.Jurnal.objects.filter(archive=False)
     serializer_class = serializers.JurnalDetailSerializer
 
 
@@ -76,7 +76,7 @@ class SubdivisionDetail(RetrieveUpdateDestroyAPIView):
 
 
 class StatyaList(generics.ListAPIView):
-    queryset = models.Statya.objects.all().order_by('-downloadview')[:12]
+    queryset = models.Statya.objects.filter(archive=False).order_by('-downloadview')[:12]
     serializer_class = serializers.StatyaSerializer
     pagination_class = paginations.PaginateBy12
     
@@ -90,7 +90,7 @@ class StatisticsApiView(generics.ListAPIView):
         journals = models.Jurnal.objects.filter(archive=False).count()
         authors = models.Author.objects.all().count()
         organizations = models.Organization.objects.all().count()
-        seminars = models.Seminar.objects.all().count()
+        seminars = models.Seminar.objects.filter(archive=False).count()
 
         payload = {
             'journals': journals,
@@ -102,17 +102,17 @@ class StatisticsApiView(generics.ListAPIView):
 
 
 class ConferenceList(ListCreateAPIView):
-    queryset = models.Conference.objects.all()
+    queryset = models.Conference.objects.filter(archive=False)
     serializer_class = serializers.ConferenceSerializer
 
 
 class ConferenceDetail(RetrieveUpdateDestroyAPIView):
-    queryset = models.Conference.objects.all()
+    queryset = models.Conference.objects.filter(archive=False)
     serializer_class = serializers.ConferenceSerializer
 
 
 class PlanningConferenceApiView(generics.ListAPIView):
-    queryset = models.Conference.objects.all()
+    queryset = models.Conference.objects.filter(archive=False)
     serializer_class = serializers.ConferenceSerializer
 
     def get(self, request):
@@ -125,7 +125,7 @@ class PlanningConferenceApiView(generics.ListAPIView):
 
 
 class SeminarList(ListCreateAPIView):
-    queryset = models.Seminar.objects.all()
+    queryset = models.Seminar.objects.filter(archive=False)
     serializer_class = serializers.SeminarSerializer
 
     def get(self, request):
@@ -138,7 +138,7 @@ class SeminarList(ListCreateAPIView):
 
 
 class SeminarDetail(RetrieveUpdateDestroyAPIView):
-    queryset = models.Seminar.objects.all()
+    queryset = models.Seminar.objects.filter(archive=False)
     serializer_class = serializers.SeminarSerializer
 
 
@@ -259,18 +259,18 @@ class SearchAPIView(generics.ListAPIView):
                 return Response(payload, status=status.HTTP_303_SEE_OTHER)   
         elif param1 == 3:
             if param2 == 2:
-                response = models.Statya.objects.filter(date__contains=string)
+                response = models.Statya.objects.filter(date__contains=string, archive=False)
                 serializer = serializers.StatyaSearchSerializer(response, many=True)
             elif param2 == 3:
-                response = models.Statya.objects.filter(keyword__contains=string)
+                response = models.Statya.objects.filter(keyword__contains=string, archive=False)
                 serializer = serializers.StatyaSearchSerializer(response, many=True)
             elif param2 == 5:
-                response = models.Statya.objects.filter(name__contains=string)
+                response = models.Statya.objects.filter(name__contains=string, archive=False)
                 serializer = serializers.StatyaSearchSerializer(response, many=True)
             elif param2 == 6:
-                response1 = models.Statya.objects.filter(author__name_uz__contains=string)
-                response2 = models.Statya.objects.filter(author__name_ru__contains=string)
-                response3 = models.Statya.objects.filter(author__name_en__contains=string)
+                response1 = models.Statya.objects.filter(author__name_uz__contains=string, archive=False)
+                response2 = models.Statya.objects.filter(author__name_ru__contains=string, archive=False)
+                response3 = models.Statya.objects.filter(author__name_en__contains=string, archive=False)
                 response = response1 | response2 | response3
                 serializer = serializers.StatyaSearchSerializer(response, many=True) 
             else:   
@@ -407,11 +407,11 @@ class UserJournalDeleteAPIView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get_queryset(self):
-        queryset = models.Jurnal.objects.all()
+        queryset = models.Jurnal.objects.filter(archive=False)
         return queryset
 
     def destroy(self, request, *args, **kwargs):
-        journals = models.Jurnal.objects.filter(organization=self.request.user.organization) or None
+        journals = models.Jurnal.objects.filter(organization=self.request.user.organization, archive=False) or None
         instance = self.get_object()
         if not instance in journals:
             raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
@@ -425,10 +425,10 @@ class UserJournalDeleteAPIView(generics.DestroyAPIView):
 class UserJournalUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = serializers.JurnalUpdateCreateSerializer
-    queryset = models.Jurnal.objects.all()
+    queryset = models.Jurnal.objects.filter(archive=False)
 
     def get_queryset(self):
-        queryset = models.Jurnal.objects.all()
+        queryset = models.Jurnal.objects.filter(archive=False)
         return queryset 
 
 
@@ -463,7 +463,7 @@ class UserArticleForSearchListAPIView(generics.ListAPIView):
 
 class UserArticleDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
-    queryset = models.Statya.objects.all()
+    queryset = models.Statya.objects.filter(archive=False)
     serializer_class = serializers.StatyaSerializer
 
 
@@ -478,10 +478,10 @@ class UserArticleCreateAPIView(generics.CreateAPIView):
 class UserArticleUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
     serializer_class = serializers.ArticleUpdateCreateSerializer
-    queryset = models.Statya.objects.all()
+    queryset = models.Statya.objects.filter(archive=False)
 
     def get_queryset(self):
-        queryset = models.Statya.objects.all()
+        queryset = models.Statya.objects.filter(archive=False)
         return queryset 
 
 
@@ -496,7 +496,7 @@ class UserArticleDeleteAPIView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get_queryset(self):
-        queryset = models.Statya.objects.all()
+        queryset = models.Statya.objects.filter(archive=False)
         return queryset
 
     def destroy(self, request, *args, **kwargs):
@@ -519,7 +519,43 @@ class UserConferenceListAPIView(generics.ListAPIView):
     pagination_class = paginations.PaginateBy6
 
     def get_queryset(self):
-        return models.Conference.objects.filter(organization=self.request.user.organization)
+        return models.Conference.objects.filter(organization=self.request.user.organization, archive=False)
+
+
+class UserConferenceCreateAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.ConferenceSerializer
+    queryset = models.Conference.objects.first()
+
+
+
+class UserConferenceUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.ConferenceSerializer
+
+    def get_queryset(self):
+        return models.Conference.objects.filter(organization=self.request.user.organization, archive=False)
+
+
+class UserConferenceDeleteAPIView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = models.Conference.objects.filter(archive=False)
+    serializer_class = serializers.ConferenceSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if self.request.user.organization != obj.organization:
+            raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
+
+        obj.archive = True
+        obj.save()
+        serializer = serializers.ConferenceSerializer(obj)
+        return Response(serializer.data)
+
+
+
+
+
 
 
 class UserSeminarListAPIView(generics.ListAPIView):
@@ -528,12 +564,28 @@ class UserSeminarListAPIView(generics.ListAPIView):
     pagination_class = paginations.PaginateBy6
 
     def get_queryset(self):
-        return models.Seminar.objects.filter(organization=self.request.user.organization)
+        return models.Seminar.objects.filter(organization=self.request.user.organization, archive=False)
+
+
+class UserSeminarCreateAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.SeminarSerializer
+    
+    def get_queryset(self):
+        return models.Seminar.objects.filter(organization=self.request.user.organization, archive=False)
+
+
+class UserSeminarUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.SeminarSerializer
+
+    def get_queryset(self):
+        return models.Seminar.objects.filter(organization=self.request.user.organization, archive=False)
 
 
 class UserSeminarDeleteAPIView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, ]
-    queryset = models.Seminar.objects.all()
+    queryset = models.Seminar.objects.filter(archive=False)
     serializer_class = serializers.SeminarSerializer
 
     def destroy(self, request, *args, **kwargs):

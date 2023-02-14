@@ -144,7 +144,7 @@ class Statya(models.Model):
 
 
 class Conference(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=500)
     description = RichTextField()
     adress = models.CharField(max_length=500)
@@ -161,7 +161,7 @@ class Conference(models.Model):
 
 
 class Seminar(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=500)
     description = RichTextField()
     link = models.URLField()

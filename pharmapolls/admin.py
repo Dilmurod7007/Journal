@@ -22,14 +22,14 @@ class VideoGalleryAdmin(TranslationAdmin):
 
 
 @admin.register(models.Conference)
-class ConferanceAdmin(admin.ModelAdmin):
-    list_display = ['name', 'date', 'archive']
+class ConferanceAdmin(TranslationAdmin):
+    list_display = ['id' ,'name', 'date', 'archive']
 
 
 
 @admin.register(models.Seminar)
-class ConferanceAdmin(admin.ModelAdmin):
-    list_display = ['name', 'date', 'archive']
+class SeminarAdmin(TranslationAdmin):
+    list_display = ['id', 'name', 'date', 'archive']
 
 
 class OrganizationAdmin(TranslationAdmin):
