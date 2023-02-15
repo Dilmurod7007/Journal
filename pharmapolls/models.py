@@ -163,6 +163,7 @@ class Conference(models.Model):
 class Seminar(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=500)
+    fio = models.CharField(max_length=500, blank=True, null=True)
     description = RichTextField()
     link = models.URLField()
     linkbutton = models.CharField(max_length=50)

@@ -307,23 +307,21 @@ class ConferenceSerializer(serializers.ModelSerializer):
 class SeminarSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'fio', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
         model = models.Seminar
-        read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive']
+        read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive', 'description_uz', 'description_ru', 'description_en']
 
     def create(self, validated_data):
         seminar_data={
         "name_uz":validated_data.pop('name_uz'), 
         "name_ru":validated_data.pop('name_ru'),
         "name_en":validated_data.pop('name_en'),
-        "description_uz":validated_data.pop("description_uz"),
-        "description_ru":validated_data.pop("description_ru"),
-        "description_en":validated_data.pop("description_en"),
         "link":validated_data.pop("link"),
         "linkbutton_uz":validated_data.pop("linkbutton_uz"),
         "linkbutton_ru":validated_data.pop("linkbutton_ru"),
         "linkbutton_en":validated_data.pop("linkbutton_en"),
         "phon_number":validated_data.pop("phon_number"),
+        "fio":validated_data.pop("fio"),
         "date":validated_data.pop("date"),
         "organization": self.context['request'].user.organization
         } 
