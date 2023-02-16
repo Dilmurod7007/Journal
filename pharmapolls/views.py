@@ -617,3 +617,44 @@ class UserAuthorForSearchAPIView(generics.ListAPIView):
         return models.Author.objects.all().order_by('-id')
 
 
+
+class UserOrganizationUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.OrganizationSerializer
+
+    def get_queryset(self):
+        return models.Organization.objects.filter(id=self.request.user.organization.id)
+
+
+
+class UserSubdivisionCreateAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    queryset = models.Subdivision.objects.all()
+    serializer_class = serializers.SubdivisionSerializer
+
+
+class UserSubdivisionUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.SubdivisionSerializer
+
+    def get_queryset(self):
+        return models.Subdivision.objects.filter(id=self.request.user.organization.id)
+
+
+
+
+class UserSubdivisionDeleteAPIView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = serializers.SubdivisionSerializer
+    queryset = models.Subdivision.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if self.request.user.organization != obj.organization:
+            raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
+
+        obj.delete()
+        serializer = serializers.SubdivisionSerializer(obj)
+        return Response(serializer.data)
+
+

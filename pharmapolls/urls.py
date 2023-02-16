@@ -55,7 +55,10 @@ urlpatterns = [
     path('user/seminar_update/<int:pk>/', views.UserSeminarUpdateAPIView.as_view(), name='user_seminar_update'),
     path('user/seminar_delete/<int:pk>/', views.UserSeminarDeleteAPIView.as_view(), name='user_seminar_delete'),
     path('user/author_create/', views.UserAuthorCreateAPIView.as_view(), name='user_author_create'),
-    path('user/author_for_search/', views.UserAuthorForSearchAPIView.as_view(), name='user_author_for_search')
-
+    path('user/author_for_search/', views.UserAuthorForSearchAPIView.as_view(), name='user_author_for_search'),
+    path('user/organization_update/<int:pk>/', views.UserOrganizationUpdateAPIView.as_view(), name='user_organization_update'),
+    path('user/subdivision_create/', views.UserSubdivisionCreateAPIView.as_view(), name='user_subdivision_create'),
+    path('user/subdivision_update/<int:pk>/', views.UserSubdivisionUpdateAPIView.as_view(), name='user_subdivision_update'),
+    path('user/subdivision_delete/<int:pk>/', views.UserSubdivisionDeleteAPIView.as_view(), name='user_subdivision_delete'),
 
 ]

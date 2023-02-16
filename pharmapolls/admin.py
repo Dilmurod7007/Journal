@@ -53,6 +53,8 @@ class ArticleAdmin(TranslationAdmin):
 
 class SubdivisionAdmin(TranslationAdmin):
     model = Subdivision
+    list_display = ['id', 'name_uz', 'organization']
+
 
 
 class NewsAdmin(TranslationAdmin):

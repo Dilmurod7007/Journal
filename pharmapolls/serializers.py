@@ -2,14 +2,32 @@ from rest_framework import serializers
 from . import models
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
-import datetime
+
 
 class SubdivisionSerializer(serializers.ModelSerializer):
     organization = serializers.StringRelatedField()
 
     class Meta:
-        fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website', 'logo', )
+        fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website', 'logo', 'image', 'issn')
         model = models.Subdivision
+        read_only_fields = ['organization', ]
+
+
+    def create(self, validated_data):
+        subdivision = models.Subdivision.objects.create(**validated_data)
+        subdivision.organization = self.context['request'].user.organization
+        subdivision.save()
+        return subdivision
+
+
+    def update(self, instance, validated_data):
+
+        for i in validated_data:
+            setattr(instance, i, validated_data[i])
+        
+        instance.save()
+        return instance
+
 
 
 
@@ -28,6 +46,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
         fields = ('id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website',
                   'image', 'logo', 'issn', 'top', 'number_table', 'subdivisions')
         model = models.Organization
+        read_only_fields = ['top', 'number_table']
+
 
 
 class AuthorSearchSerializer(serializers.ModelSerializer):

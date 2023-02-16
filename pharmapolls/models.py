@@ -106,7 +106,7 @@ class Jurnal(models.Model):
 
 
 class Subdivision(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='organization_subdivision')
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='organization_subdivision', blank=True, null=True)
     name = models.CharField(max_length=500)
     description = RichTextField()
     adress = models.CharField(max_length=500)
@@ -115,6 +115,11 @@ class Subdivision(models.Model):
     email = models.EmailField()
     website = models.CharField(max_length=50)
     logo = models.ImageField(upload_to='images/', blank=True)
+    issn = models.CharField(max_length=150, blank=True)
+    image = models.ImageField(upload_to='images/', blank=True)
+
+
+
 
     def __str__(self):
         return self.name
