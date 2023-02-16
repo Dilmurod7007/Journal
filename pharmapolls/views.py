@@ -365,6 +365,7 @@ class UserDashboardAPIView(generics.ListAPIView):
             'seminar_all': seminar.count(),
             },
         "contacts": {
+            'organization_id': self.request.user.organization.id,
             'organization_uz': self.request.user.organization.name_uz,
             'organization_ru': self.request.user.organization.name_ru,
             'organization_en': self.request.user.organization.name_en,
