@@ -639,7 +639,7 @@ class UserSubdivisionUpdateAPIView(generics.UpdateAPIView):
     serializer_class = serializers.SubdivisionSerializer
 
     def get_queryset(self):
-        return models.Subdivision.objects.filter(id=self.request.user.organization.id)
+        return models.Subdivision.objects.filter(organization=self.request.user.organization)
 
 
 
@@ -657,5 +657,6 @@ class UserSubdivisionDeleteAPIView(generics.DestroyAPIView):
         obj.delete()
         serializer = serializers.SubdivisionSerializer(obj)
         return Response(serializer.data)
+
 
 

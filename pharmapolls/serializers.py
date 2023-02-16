@@ -39,14 +39,28 @@ class OrganizationSearchSerializer(serializers.ModelSerializer):
 
 
 
+
+
 class OrganizationSerializer(serializers.ModelSerializer):
-    subdivisions = SubdivisionSerializer(many=True, source='organization_subdivision')
+    subdivisions = SubdivisionSerializer(many=True, source='organization_subdivision', read_only=True)
+    subdivision_position = serializers.CharField(write_only=True)
 
     class Meta:
         fields = ('id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website',
-                  'image', 'logo', 'issn', 'top', 'number_table', 'subdivisions')
+                  'image', 'logo', 'issn', 'top', 'number_table', 'subdivisions', 'subdivision_position')
         model = models.Organization
         read_only_fields = ['top', 'number_table']
+
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+
+        for i in validated_data:
+            setattr(instance, i, validated_data[i])
+        instance.save()
+        return instance    
+
+
 
 
 
@@ -156,7 +170,6 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
-        print(validated_data)
         language = validated_data.pop("language")
         journal = validated_data.get("jurnal")
         author = validated_data.pop("author_ids")
