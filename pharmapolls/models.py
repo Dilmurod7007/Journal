@@ -117,8 +117,7 @@ class Subdivision(models.Model):
     logo = models.ImageField(upload_to='images/', blank=True)
     issn = models.CharField(max_length=150, blank=True)
     image = models.ImageField(upload_to='images/', blank=True)
-
-
+    position = models.PositiveIntegerField(blank=True, null=True)
 
 
     def __str__(self):

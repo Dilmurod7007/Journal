@@ -2,6 +2,7 @@ from rest_framework import serializers
 from . import models
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
+import json
 
 
 class SubdivisionSerializer(serializers.ModelSerializer):
@@ -53,13 +54,16 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        print(validated_data)
+        subdivision_position = json.loads(validated_data.get('subdivision_position')) 
+        for i in subdivision_position['subdivision_position']:
+            subdivision = models.Subdivision.objects.get(id=i['id'], organization=self.context['request'].user.organization)
+            subdivision.position = i['position']
+            subdivision.save()
 
         for i in validated_data:
             setattr(instance, i, validated_data[i])
         instance.save()
         return instance    
-
 
 
 
