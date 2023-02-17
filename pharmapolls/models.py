@@ -155,7 +155,7 @@ class Conference(models.Model):
     phon_number = models.CharField(max_length=13)
     email = models.EmailField()
     date = models.DateField()
-    sponsor = models.CharField(max_length=250)
+    sponsor = models.CharField(max_length=250, blank=True, null=True)
     archive = models.BooleanField(default=False)
     views = models.IntegerField(default=0)
 
@@ -173,7 +173,7 @@ class Seminar(models.Model):
     linkbutton = models.CharField(max_length=50)
     phon_number = models.CharField(max_length=13)
     date = models.DateField()
-    sponsor = models.CharField(max_length=250)
+    sponsor = models.CharField(max_length=250, blank=True, null=True)
     archive = models.BooleanField(default=False)
     views = models.IntegerField(default=0)
 

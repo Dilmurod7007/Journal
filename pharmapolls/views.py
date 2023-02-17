@@ -209,86 +209,104 @@ class SearchAPIView(generics.ListAPIView):
             'error': "notog'ri informatsia kiritildi",
         }
 
-        if param1 == 1:
-            if param2 == 4:
-                response1 = models.Organization.objects.filter(name_uz__contains=string)
-                response2 = models.Organization.objects.filter(name_ru__contains=string)
-                response3 = models.Organization.objects.filter(name_en__contains=string)
-                response = response1 | response2 | response3
-                serializer = serializers.OrganizationSearchSerializer(response, many=True)
-            elif param2 == 8:
-                response = models.Organization.objects.filter(phon_number__contains=string)
-                serializer = serializers.OrganizationSearchSerializer(response, many=True) 
-            elif param2 == 9:
-                response = models.Organization.objects.filter(issn__contains=string)
-                serializer = serializers.OrganizationSearchSerializer(response, many=True)
-            elif param2 == 10:
-                response1 = models.Organization.objects.filter(adress_uz__contains=string)
-                response2 = models.Organization.objects.filter(adress_en__contains=string)
-                response3 = models.Organization.objects.filter(adress_ru__contains=string)
-                response = response1 | response2 | response3
-                serializer = serializers.OrganizationSearchSerializer(response, many=True)
+        if param2 == 11:
+            my_string = string.split(',')
+            if param1 == 1:
+                response = models.Organization.objects.filter(id__in=my_string)
+                serializer = serializers.OrganizationSerializer(response, many=True)
+            elif param1 == 2:
+                response = models.Jurnal.objects.filter(id__in=my_string)
+                serializer = serializers.JurnalSerializer(response, many=True)
+            elif param1 == 3:
+                response = models.Statya.objects.filter(id__in=my_string)
+                serializer = serializers.StatyaSerializer(response, many=True)       
+            elif param1 == 4:
+                response = models.Author.objects.filter(id__in=my_string)
+                serializer = serializers.AuthorSerializer(response, many=True)   
             else:
-                return Response(payload, status=status.HTTP_303_SEE_OTHER)   
-        elif param1 == 2:
-            if param2 == 1:
-                response1 = models.Jurnal.objects.filter(archive=False, name_uz__contains=string)
-                response2 = models.Jurnal.objects.filter(archive=False, name_ru__contains=string)
-                response3 = models.Jurnal.objects.filter(archive=False, name_en__contains=string)
-                response = response1 | response2 | response3
-                serializer = serializers.JurnalSearchSerializer(response, many=True)
-            elif param2 == 2:
-                response = models.Jurnal.objects.filter(archive=False, date__contains=string)
-                serializer = serializers.JurnalSearchSerializer(response, many=True)
-            elif param2 == 3:
-                response1 = models.Jurnal.objects.filter(archive=False, keyword_uz__contains=string)
-                response2 = models.Jurnal.objects.filter(archive=False, keyword_ru__contains=string)
-                response3 = models.Jurnal.objects.filter(archive=False, keyword_en__contains=string)
-                response = response1 | response2 | response3
-                serializer = serializers.JurnalSearchSerializer(response, many=True)
-            elif param2 == 4:
-                response1 = models.Jurnal.objects.filter(archive=False, organization__name_uz__contains=string)
-                response2 = models.Jurnal.objects.filter(archive=False, organization__name_ru__contains=string)
-                response3 = models.Jurnal.objects.filter(archive=False, organization__name_en__contains=string)
-                response = response1 | response2 | response3
-                serializer = serializers.JurnalSearchSerializer(response, many=True)
-            elif param2 == 5:
-                response = models.Jurnal.objects.filter(archive=False, journal_article__name__contains=string)
-                serializer = serializers.JurnalSearchSerializer(response, many=True)
-            else:
-                return Response(payload, status=status.HTTP_303_SEE_OTHER)   
-        elif param1 == 3:
-            if param2 == 2:
-                response = models.Statya.objects.filter(date__contains=string, archive=False)
-                serializer = serializers.StatyaSearchSerializer(response, many=True)
-            elif param2 == 3:
-                response = models.Statya.objects.filter(keyword__contains=string, archive=False)
-                serializer = serializers.StatyaSearchSerializer(response, many=True)
-            elif param2 == 5:
-                response = models.Statya.objects.filter(name__contains=string, archive=False)
-                serializer = serializers.StatyaSearchSerializer(response, many=True)
-            elif param2 == 6:
-                response1 = models.Statya.objects.filter(author__name_uz__contains=string, archive=False)
-                response2 = models.Statya.objects.filter(author__name_ru__contains=string, archive=False)
-                response3 = models.Statya.objects.filter(author__name_en__contains=string, archive=False)
-                response = response1 | response2 | response3
-                serializer = serializers.StatyaSearchSerializer(response, many=True) 
-            else:   
-                return Response(payload, status=status.HTTP_303_SEE_OTHER)       
-        elif param1 == 4:
-            if param2 == 7:
-                response1 = models.Author.objects.filter(name_uz__contains=string)
-                response2 = models.Author.objects.filter(name_ru__contains=string)
-                response3 = models.Author.objects.filter(name_en__contains=string)
-                response = response1 | response2 | response3
-                serializer = serializers.AuthorSearchSerializer(response, many=True)
-            elif param2 == 5:
-                response = models.Author.objects.filter(article_author__name__contains=string)
-                serializer = serializers.AuthorSearchSerializer(response, many=True)
-            else:
-                return Response(payload, status=status.HTTP_303_SEE_OTHER)   
+                return Response(payload, status=status.HTTP_303_SEE_OTHER)
         else:
-            return Response(payload, status=status.HTTP_303_SEE_OTHER)   
+
+            if param1 == 1:
+                if param2 == 4:
+                    response1 = models.Organization.objects.filter(name_uz__contains=string)
+                    response2 = models.Organization.objects.filter(name_ru__contains=string)
+                    response3 = models.Organization.objects.filter(name_en__contains=string)
+                    response = response1 | response2 | response3
+                    serializer = serializers.OrganizationSearchSerializer(response, many=True)
+                elif param2 == 8:
+                    response = models.Organization.objects.filter(phon_number__contains=string)
+                    serializer = serializers.OrganizationSearchSerializer(response, many=True) 
+                elif param2 == 9:
+                    response = models.Organization.objects.filter(issn__contains=string)
+                    serializer = serializers.OrganizationSearchSerializer(response, many=True)
+                elif param2 == 10:
+                    response1 = models.Organization.objects.filter(adress_uz__contains=string)
+                    response2 = models.Organization.objects.filter(adress_en__contains=string)
+                    response3 = models.Organization.objects.filter(adress_ru__contains=string)
+                    response = response1 | response2 | response3
+                    serializer = serializers.OrganizationSearchSerializer(response, many=True)
+                else:
+                    return Response(payload, status=status.HTTP_303_SEE_OTHER)   
+            elif param1 == 2:
+                if param2 == 1:
+                    response1 = models.Jurnal.objects.filter(archive=False, name_uz__contains=string)
+                    response2 = models.Jurnal.objects.filter(archive=False, name_ru__contains=string)
+                    response3 = models.Jurnal.objects.filter(archive=False, name_en__contains=string)
+                    response = response1 | response2 | response3
+                    serializer = serializers.JurnalSearchSerializer(response, many=True)
+                elif param2 == 2:
+                    response = models.Jurnal.objects.filter(archive=False, date__contains=string)
+                    serializer = serializers.JurnalSearchSerializer(response, many=True)
+                elif param2 == 3:
+                    response1 = models.Jurnal.objects.filter(archive=False, keyword_uz__contains=string)
+                    response2 = models.Jurnal.objects.filter(archive=False, keyword_ru__contains=string)
+                    response3 = models.Jurnal.objects.filter(archive=False, keyword_en__contains=string)
+                    response = response1 | response2 | response3
+                    serializer = serializers.JurnalSearchSerializer(response, many=True)
+                elif param2 == 4:
+                    response1 = models.Jurnal.objects.filter(archive=False, organization__name_uz__contains=string)
+                    response2 = models.Jurnal.objects.filter(archive=False, organization__name_ru__contains=string)
+                    response3 = models.Jurnal.objects.filter(archive=False, organization__name_en__contains=string)
+                    response = response1 | response2 | response3
+                    serializer = serializers.JurnalSearchSerializer(response, many=True)
+                elif param2 == 5:
+                    response = models.Jurnal.objects.filter(archive=False, journal_article__name__contains=string)
+                    serializer = serializers.JurnalSearchSerializer(response, many=True)
+                else:
+                    return Response(payload, status=status.HTTP_303_SEE_OTHER)   
+            elif param1 == 3:
+                if param2 == 2:
+                    response = models.Statya.objects.filter(date__contains=string, archive=False)
+                    serializer = serializers.StatyaSearchSerializer(response, many=True)
+                elif param2 == 3:
+                    response = models.Statya.objects.filter(keyword__contains=string, archive=False)
+                    serializer = serializers.StatyaSearchSerializer(response, many=True)
+                elif param2 == 5:
+                    response = models.Statya.objects.filter(name__contains=string, archive=False)
+                    serializer = serializers.StatyaSearchSerializer(response, many=True)
+                elif param2 == 6:
+                    response1 = models.Statya.objects.filter(author__name_uz__contains=string, archive=False)
+                    response2 = models.Statya.objects.filter(author__name_ru__contains=string, archive=False)
+                    response3 = models.Statya.objects.filter(author__name_en__contains=string, archive=False)
+                    response = response1 | response2 | response3
+                    serializer = serializers.StatyaSearchSerializer(response, many=True) 
+                else:   
+                    return Response(payload, status=status.HTTP_303_SEE_OTHER)       
+            elif param1 == 4:
+                if param2 == 7:
+                    response1 = models.Author.objects.filter(name_uz__contains=string)
+                    response2 = models.Author.objects.filter(name_ru__contains=string)
+                    response3 = models.Author.objects.filter(name_en__contains=string)
+                    response = response1 | response2 | response3
+                    serializer = serializers.AuthorSearchSerializer(response, many=True)
+                elif param2 == 5:
+                    response = models.Author.objects.filter(article_author__name__contains=string)
+                    serializer = serializers.AuthorSearchSerializer(response, many=True)
+                else:
+                    return Response(payload, status=status.HTTP_303_SEE_OTHER)   
+            else:
+                return Response(payload, status=status.HTTP_303_SEE_OTHER)   
 
             
         return Response(serializer.data)

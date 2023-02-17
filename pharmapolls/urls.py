@@ -30,7 +30,7 @@ urlpatterns = [
     path("faq/", views.FaqList.as_view()),
     path("banner/", views.BannerList.as_view()),
     path("webcontact/", views.WebcontactList.as_view()),
-    path('filter/<int:param1>/<int:param2>/<str:string>/', views.SearchAPIView.as_view()),
+    path('filter/<int:param1>/<int:param2>/<str:string>/', views.SearchAPIView.as_view(), name='search'),
     path('auth/login/', views.UserLoginAPIView.as_view(), name='login'),
     path('auth/register/', views.UserRegisterAPIView.as_view(), name='register'),
     path('auth/logout/', views.UserLogoutAPIView.as_view(), name='logout'),

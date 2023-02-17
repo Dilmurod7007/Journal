@@ -34,7 +34,7 @@ class ConferenceTranslationOptions(TranslationOptions):
 
 @register(models.Seminar)
 class SeminarTranslationOptions(TranslationOptions):
-    fields = ('name', 'description', 'linkbutton', 'sponsor',)
+    fields = ('name', 'fio', 'description', 'linkbutton', 'sponsor',)
 
 
 @register(models.News)

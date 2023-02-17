@@ -12,6 +12,7 @@ class SubdivisionSerializer(serializers.ModelSerializer):
         fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'facs_number', 'email', 'website', 'logo', 'image', 'issn')
         model = models.Subdivision
         read_only_fields = ['organization', ]
+        order_by = ['position', ]
 
 
     def create(self, validated_data):
@@ -43,7 +44,7 @@ class OrganizationSearchSerializer(serializers.ModelSerializer):
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    subdivisions = SubdivisionSerializer(many=True, source='organization_subdivision', read_only=True)
+    subdivisions = serializers.SerializerMethodField()
     subdivision_position = serializers.CharField(write_only=True)
 
     class Meta:
@@ -53,8 +54,13 @@ class OrganizationSerializer(serializers.ModelSerializer):
         read_only_fields = ['top', 'number_table']
 
 
+    def get_subdivisions(self, instance):
+        subdivisions = models.Subdivision.objects.filter(organization=instance).order_by('position')
+        return SubdivisionSerializer(subdivisions, many=True, read_only=True).data
+
+
     def update(self, instance, validated_data):
-        subdivision_position = json.loads(validated_data.get('subdivision_position')) 
+        subdivision_position = json.loads(validated_data.get('subdivision_position'))
         for i in subdivision_position['subdivision_position']:
             subdivision = models.Subdivision.objects.get(id=i['id'], organization=self.context['request'].user.organization)
             subdivision.position = i['position']
@@ -63,7 +69,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         for i in validated_data:
             setattr(instance, i, validated_data[i])
         instance.save()
-        return instance    
+        return instance
 
 
 
@@ -344,7 +350,7 @@ class ConferenceSerializer(serializers.ModelSerializer):
 class SeminarSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'fio', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'fio_uz', 'fio_ru', 'fio_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
         model = models.Seminar
         read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive', 'description_uz', 'description_ru', 'description_en']
 
@@ -358,7 +364,9 @@ class SeminarSerializer(serializers.ModelSerializer):
         "linkbutton_ru":validated_data.pop("linkbutton_ru"),
         "linkbutton_en":validated_data.pop("linkbutton_en"),
         "phon_number":validated_data.pop("phon_number"),
-        "fio":validated_data.pop("fio"),
+        "fio_uz":validated_data.pop("fio_uz"),
+        "fio_ru":validated_data.pop("fio_ru"),
+        "fio_en":validated_data.pop("fio_en"),
         "date":validated_data.pop("date"),
         "organization": self.context['request'].user.organization
         } 
