@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
-
+from rest_framework.pagination import PageNumberPagination
 
 
 
@@ -120,7 +120,7 @@ class PlanningConferenceApiView(generics.ListAPIView):
         ended = models.Conference.objects.filter(Q(date__lt=today))
         ended.update(archive=True)
         conference = models.Conference.objects.filter(archive=False).order_by('date')[:12]
-        serializer = serializers.ConferenceSerializer(conference, many=True)
+        serializer = serializers.ConferenceSerializer(conference, many=True, context={"request": request})
         return Response(serializer.data)
 
 
@@ -133,7 +133,7 @@ class SeminarList(ListCreateAPIView):
         ended = models.Seminar.objects.filter(Q(date__lt=today))
         ended.update(archive=True)
         seminar = models.Seminar.objects.filter(archive=False).order_by('date')
-        serializer = serializers.SeminarSerializer(seminar, many=True)
+        serializer = serializers.SeminarSerializer(seminar, many=True, context={"request": request})
         return Response(serializer.data)
 
 
@@ -205,6 +205,7 @@ class SearchAPIView(generics.ListAPIView):
     serializer_class = serializers.AuthorSerializer
 
     def get(self, request, param1, param2, string):
+        paginator = PageNumberPagination()
         payload = {
             'error': "notog'ri informatsia kiritildi",
         }
@@ -212,19 +213,40 @@ class SearchAPIView(generics.ListAPIView):
         if param2 == 11:
             my_string = string.split(',')
             if param1 == 1:
-                response = models.Organization.objects.filter(id__in=my_string)
-                serializer = serializers.OrganizationSerializer(response, many=True)
+                # response = models.Organization.objects.filter(id__in=my_string)
+                # serializer = serializers.OrganizationSerializer(response, many=True, context={"request": request})
+                paginator.page_size = 15
+                objects = models.Organization.objects.filter(id__in=my_string)
+                result = paginator.paginate_queryset(objects, request)
+                serializer = serializers.OrganizationSerializer(result, many=True, context={"request": request})
             elif param1 == 2:
-                response = models.Jurnal.objects.filter(id__in=my_string)
-                serializer = serializers.JurnalSerializer(response, many=True)
+                # response = models.Jurnal.objects.filter(id__in=my_string)
+                # serializer = serializers.JurnalSerializer(response, many=True, context={"request": request})
+                paginator.page_size = 12
+                objects = models.Jurnal.objects.filter(id__in=my_string)
+                result = paginator.paginate_queryset(objects, request)
+                serializer = serializers.JurnalSerializer(result, many=True, context={"request": request})
             elif param1 == 3:
-                response = models.Statya.objects.filter(id__in=my_string)
-                serializer = serializers.StatyaSerializer(response, many=True)       
+                # response = models.Statya.objects.filter(id__in=my_string)
+                # serializer = serializers.StatyaSerializer(response, many=True, context={"request": request})  
+                paginator.page_size = 12
+                objects = models.Statya.objects.filter(id__in=my_string)
+                result = paginator.paginate_queryset(objects, request)
+                serializer = serializers.StatyaSerializer(result, many=True, context={"request": request})  
             elif param1 == 4:
-                response = models.Author.objects.filter(id__in=my_string)
-                serializer = serializers.AuthorSerializer(response, many=True)   
+                # response = models.Author.objects.filter(id__in=my_string)
+                # serializer = serializers.AuthorSerializer(response, many=True, context={"request": request})   
+                paginator.page_size = 20
+                objects = models.Author.objects.filter(id__in=my_string)
+                result = paginator.paginate_queryset(objects, request)
+                serializer = serializers.AuthorSerializer(result, many=True, context={"request": request}) 
             else:
                 return Response(payload, status=status.HTTP_303_SEE_OTHER)
+            
+
+
+            return paginator.get_paginated_response(serializer.data)
+
         else:
 
             if param1 == 1:
@@ -436,7 +458,7 @@ class UserJournalDeleteAPIView(generics.DestroyAPIView):
             raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
         instance.archive = True
         instance.save()
-        serializer = serializers.JurnalSerializer(instance)
+        serializer = serializers.JurnalSerializer(instance, context={"request": request})
         return Response(serializer.data)
 
 
@@ -522,11 +544,9 @@ class UserArticleDeleteAPIView(generics.DestroyAPIView):
         obj = self.get_object()
         if self.request.user.organization != obj.jurnal.organization:
             raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
-
-        print("What the fuck")
         obj.archive = True
         obj.save()
-        serializer = serializers.StatyaSerializer(obj)
+        serializer = serializers.StatyaSerializer(obj, context={"request": request})
         return Response(serializer.data)
 
 
@@ -568,7 +588,7 @@ class UserConferenceDeleteAPIView(generics.DestroyAPIView):
 
         obj.archive = True
         obj.save()
-        serializer = serializers.ConferenceSerializer(obj)
+        serializer = serializers.ConferenceSerializer(obj, context={"request": request})
         return Response(serializer.data)
 
 
@@ -673,7 +693,7 @@ class UserSubdivisionDeleteAPIView(generics.DestroyAPIView):
             raise PermissionDenied('Foydalanuvchiga ruxsat etilmagan!')
 
         obj.delete()
-        serializer = serializers.SubdivisionSerializer(obj)
+        serializer = serializers.SubdivisionSerializer(obj, context={"request": request})
         return Response(serializer.data)
 
 
