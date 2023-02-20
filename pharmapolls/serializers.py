@@ -384,8 +384,7 @@ class VideoSerializer(serializers.ModelSerializer):
         model = models.Video
 
 
-class Video_GallerySerializer(serializers.ModelSerializer):
-    video = VideoSerializer()
+class VideoGallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('id', 'video', 'videourl', 'title', )

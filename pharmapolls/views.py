@@ -147,19 +147,16 @@ class VideoList(generics.ListAPIView):
     serializer_class = serializers.VideoSerializer
 
 
-class VideoDetail(RetrieveUpdateDestroyAPIView):
-    queryset = models.Video.objects.all()
-    serializer_class = serializers.VideoSerializer
 
+class VideoGalleryListAPIView(generics.ListAPIView):
+    queryset = models.Video.objects.all().order_by('-id')
+    serializer_class = serializers.VideoGallerySerializer
 
-class Video_GalleryList(ListCreateAPIView):
-    queryset = models.Video_Gallery.objects.all()
-    serializer_class = serializers.Video_GallerySerializer
+    def get_queryset(self):
+        obj = models.Video_Gallery.objects.filter(video_id=self.kwargs['pk'])
+        print(obj)
+        return models.Video_Gallery.objects.filter(video_id=self.kwargs['pk'])
 
-
-class Video_GalleryDetail(RetrieveUpdateDestroyAPIView):
-    queryset = models.Video_Gallery.objects.all()
-    serializer_class = serializers.Video_GallerySerializer
 
 
 class NewsList(ListCreateAPIView):

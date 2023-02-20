@@ -11,14 +11,14 @@ class VidioInline(admin.StackedInline):
 @admin.register(models.Video)
 class VideoAdmin(TranslationAdmin):
 
-    list_display = ['title', 'organization', 'views']
+    list_display = ['id', 'title', 'organization', 'views']
     inlines = [VidioInline]
 
 
 @admin.register(models.Video_Gallery)
 class VideoGalleryAdmin(TranslationAdmin):
 
-    list_display = ['title', 'video']
+    list_display = ['id', 'title', 'video']
 
 
 @admin.register(models.Conference)
