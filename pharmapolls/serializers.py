@@ -380,14 +380,14 @@ class SeminarSerializer(serializers.ModelSerializer):
 class VideoSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'title', 'photo', 'organization', 'views', 'date', )
+        fields = ('id', 'title_uz', 'title_ru', 'title_en', 'photo', 'organization_uz', 'organization_ru', 'organization_en', 'views', 'date', )
         model = models.Video
 
 
 class VideoGallerySerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'video', 'videourl', 'title', )
+        fields = ('id', 'video', 'videourl', 'title_uz', 'title_ru', 'title_en' )
         model = models.Video_Gallery
 
 

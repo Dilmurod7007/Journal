@@ -195,7 +195,7 @@ class Video(models.Model):
 
 class Video_Gallery(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
-    videourl = models.URLField()
+    videourl = models.URLField(blank=True, null=True)
     title = models.CharField(max_length=250)
 
     def __str__(self):
