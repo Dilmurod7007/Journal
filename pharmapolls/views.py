@@ -278,8 +278,12 @@ class SearchAPIView(generics.ListAPIView):
                     response = response1 | response2 | response3
                     serializer = serializers.JurnalSearchSerializer(response, many=True)
                 elif param2 == 2:
-                    date = datetime.datetime.strptime(string, '%d.%m.%Y').date()
-                    new_date = date.strftime("%Y-%d-%m")
+                    try:
+                        date = datetime.datetime.strptime(string, '%d.%m.%Y').date()
+                        new_date = date.strftime("%Y-%d-%m")
+                        print("try is working")
+                    except:
+                        new_date = string
                     response = models.Jurnal.objects.filter(archive=False, date__contains=new_date)
                     serializer = serializers.JurnalSearchSerializer(response, many=True)
                 elif param2 == 3:
@@ -301,8 +305,12 @@ class SearchAPIView(generics.ListAPIView):
                     return Response(payload, status=status.HTTP_303_SEE_OTHER)   
             elif param1 == 3:
                 if param2 == 2:
-                    date = datetime.datetime.strptime(string, '%d.%m.%Y').date()
-                    new_date = date.strftime("%Y-%d-%m")
+                    try:
+                        date = datetime.datetime.strptime(string, '%d.%m.%Y').date()
+                        new_date = date.strftime("%Y-%d-%m")
+                        print("try is working")
+                    except:
+                        new_date = string
                     response = models.Statya.objects.filter(date__contains=new_date, archive=False)
                     serializer = serializers.StatyaSearchSerializer(response, many=True)
                 elif param2 == 3:
