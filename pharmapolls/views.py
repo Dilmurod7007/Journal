@@ -145,12 +145,16 @@ class SeminarDetail(RetrieveUpdateDestroyAPIView):
 class VideoList(generics.ListAPIView):
     queryset = models.Video.objects.all().order_by('-id')
     serializer_class = serializers.VideoSerializer
+    pagination_class = paginations.PaginateBy16
+
 
 
 
 class VideoGalleryListAPIView(generics.ListAPIView):
     queryset = models.Video.objects.all().order_by('-id')
     serializer_class = serializers.VideoGallerySerializer
+    pagination_class = paginations.PaginateBy16
+
 
     def get_queryset(self):
         obj = models.Video_Gallery.objects.filter(video_id=self.kwargs['pk'])
@@ -159,9 +163,10 @@ class VideoGalleryListAPIView(generics.ListAPIView):
 
 
 
-class NewsList(ListCreateAPIView):
+class NewsList(generics.ListAPIView):
     queryset = models.News.objects.all()
     serializer_class = serializers.NewsSerializer
+    pagination_class = paginations.PaginateBy12
 
 
 class NewsDetail(RetrieveUpdateDestroyAPIView):
