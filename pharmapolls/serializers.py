@@ -373,7 +373,7 @@ class SeminarSerializer(serializers.ModelSerializer):
     created_date = serializers.DateField(source='date', read_only=True)
 
     class Meta:
-        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'fio_uz', 'fio_ru', 'fio_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'fio_uz', 'fio_ru', 'fio_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'created_date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
         model = models.Seminar
         read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive', 'description_uz', 'description_ru', 'description_en']
 
