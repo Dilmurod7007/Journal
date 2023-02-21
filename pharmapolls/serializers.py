@@ -1,3 +1,4 @@
+import datetime
 from rest_framework import serializers
 from . import models
 from django.db.models import Sum
@@ -153,6 +154,7 @@ class ArticleForeignKeySerializer(serializers.PrimaryKeyRelatedField):
 class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
     jurnal = ArticleForeignKeySerializer()
     author_ids = serializers.CharField(write_only=True)
+    date = serializers.CharField(write_only=True)
     # author = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -173,6 +175,10 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
             
         except:
             pass
+
+        date = datetime.datetime.strptime(validated_data.pop("date"), '%d.%m.%Y').date()
+        new_date = date.strftime("%Y-%d-%m")
+        instance.date = new_date
         for i in validated_data:
             setattr(instance, i, validated_data[i])
         
@@ -184,11 +190,15 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
         journal = validated_data.get("jurnal")
         author = validated_data.pop("author_ids")
 
+        date = datetime.datetime.strptime(validated_data.pop("date"), '%d.%m.%Y').date()
+        new_date = date.strftime("%Y-%d-%m")
+
+
         article_data={
         "name_uz":validated_data.pop('name_uz'), 
         "name_ru":validated_data.pop('name_ru'),
         "name_en":validated_data.pop('name_en'),
-        "date": validated_data.pop("date"),
+        "date": new_date,
         "language": language,
         "keyword": validated_data.pop('keyword'),
         "jurnal": journal,
@@ -267,6 +277,8 @@ class JurnalSearchSerializer(serializers.ModelSerializer):
 
 
 class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
+    date = serializers.CharField(write_only=True)
+
 
     class Meta:
         fields = ['id', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'pdf_file', 'keyword_uz', 'keyword_ru', 'keyword_en', 'image', 'date']
@@ -274,6 +286,9 @@ class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
         extra_kwargs = {'name': {'required': False}} 
 
     def update(self, instance, validated_data):
+        date = datetime.datetime.strptime(validated_data.pop("date"), '%d.%m.%Y').date()
+        new_date = date.strftime("%Y-%d-%m")
+        instance.date = new_date
 
         for i in validated_data:
             setattr(instance, i, validated_data[i])
@@ -281,6 +296,8 @@ class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
         return instance
 
     def create(self, validated_data):
+        date = datetime.datetime.strptime(validated_data.pop("date"), '%d.%m.%Y').date()
+        new_date = date.strftime("%Y-%d-%m")
         journal_data={
         "name_uz":validated_data.pop('name_uz'), 
         "name_ru":validated_data.pop('name_ru'),
@@ -293,7 +310,7 @@ class JurnalUpdateCreateSerializer(serializers.ModelSerializer):
         "keyword_ru":validated_data.pop("keyword_ru"),
         "keyword_en":validated_data.pop("keyword_en"),
         "image":validated_data.pop("image"),
-        "date": validated_data.pop("date"),
+        "date": new_date,
         "organization": self.context['request'].user.organization
         } 
 
@@ -316,15 +333,19 @@ class JurnalSerializer(serializers.ModelSerializer):
 
 
 class ConferenceSerializer(serializers.ModelSerializer):
-    # organization = OrganizationSerializer()
+    date = serializers.CharField(write_only=True)
+    created_date = serializers.DateField(source='date', read_only=True)
+
 
     class Meta:
-        fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive', 'views' )
+        fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'created_date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive', 'views' )
         model = models.Conference
         read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive', 'organization']
 
 
     def create(self, validated_data):
+        date = datetime.datetime.strptime(validated_data.pop("date"), '%d.%m.%Y').date()
+        new_date = date.strftime("%Y-%d-%m")
         conference_data={
         "name_uz":validated_data.pop('name_uz'), 
         "name_ru":validated_data.pop('name_ru'),
@@ -336,7 +357,7 @@ class ConferenceSerializer(serializers.ModelSerializer):
         "adress_ru":validated_data.pop("adress_ru"),
         "adress_en":validated_data.pop("adress_en"),
         "phon_number":validated_data.pop("phon_number"),
-        "date":validated_data.pop("date"),
+        "date":new_date,
         "email":validated_data.pop("email"),
         "organization": self.context['request'].user.organization
         } 
@@ -348,6 +369,8 @@ class ConferenceSerializer(serializers.ModelSerializer):
 
 
 class SeminarSerializer(serializers.ModelSerializer):
+    date = serializers.CharField(write_only=True)
+    created_date = serializers.DateField(source='date', read_only=True)
 
     class Meta:
         fields = ('id', 'name_uz', 'name_ru', 'name_en', 'fio_uz', 'fio_ru', 'fio_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
@@ -355,6 +378,8 @@ class SeminarSerializer(serializers.ModelSerializer):
         read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive', 'description_uz', 'description_ru', 'description_en']
 
     def create(self, validated_data):
+        date = datetime.datetime.strptime(validated_data.pop("date"), '%d.%m.%Y').date()
+        new_date = date.strftime("%Y-%d-%m")
         seminar_data={
         "name_uz":validated_data.pop('name_uz'), 
         "name_ru":validated_data.pop('name_ru'),
@@ -367,7 +392,7 @@ class SeminarSerializer(serializers.ModelSerializer):
         "fio_uz":validated_data.pop("fio_uz"),
         "fio_ru":validated_data.pop("fio_ru"),
         "fio_en":validated_data.pop("fio_en"),
-        "date":validated_data.pop("date"),
+        "date":new_date,
         "organization": self.context['request'].user.organization
         } 
 

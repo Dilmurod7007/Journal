@@ -283,7 +283,6 @@ class SearchAPIView(generics.ListAPIView):
                     try:
                         date = datetime.datetime.strptime(string, '%d.%m.%Y').date()
                         new_date = date.strftime("%Y-%d-%m")
-                        print("try is working")
                     except:
                         new_date = string
                     response = models.Jurnal.objects.filter(archive=False, date__contains=new_date)
