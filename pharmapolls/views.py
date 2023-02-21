@@ -201,6 +201,29 @@ class WebcontactList(generics.ListAPIView):
     serializer_class = serializers.WebcontactSerializer
 
 
+class UserSearchAPIView(generics.ListAPIView):
+    queryset = models.Author.objects.all()
+    serializer_class = serializers.AuthorSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+
+    def get(self, request, param, string):
+        paginator = PageNumberPagination()
+        payload = {
+            'error': "notog'ri informatsia kiritildi",
+        }   
+        user = request.user
+
+
+        if param == 1:
+            objects = models.Jurnal.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization)
+            serializer = serializers.UserJournalListSerializer(objects, many=True, context={"request": request})
+        else:
+            return Response(payload, status=status.HTTP_303_SEE_OTHER)
+
+        return Response(serializer.data)
+
+
 
 class SearchAPIView(generics.ListAPIView):
     queryset = models.Author.objects.all()

@@ -55,9 +55,10 @@ class OrganizationSerializer(serializers.ModelSerializer):
         read_only_fields = ['top', 'number_table']
 
 
+
     def get_subdivisions(self, instance):
         subdivisions = models.Subdivision.objects.filter(organization=instance).order_by('position')
-        return SubdivisionSerializer(subdivisions, many=True, read_only=True).data
+        return SubdivisionSerializer(subdivisions, many=True, read_only=True, context={"request": self.context.get("request")}).data
 
 
     def update(self, instance, validated_data):
