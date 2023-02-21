@@ -58,6 +58,7 @@ urlpatterns = [
     path('user/subdivision_create/', views.UserSubdivisionCreateAPIView.as_view(), name='user_subdivision_create'),
     path('user/subdivision_update/<int:pk>/', views.UserSubdivisionUpdateAPIView.as_view(), name='user_subdivision_update'),
     path('user/subdivision_delete/<int:pk>/', views.UserSubdivisionDeleteAPIView.as_view(), name='user_subdivision_delete'),
-    path('user/search/<int:param>/<str:string>/', views.UserSearchAPIView.as_view(), name='user_search')
+    path('user/search/<int:param>/<str:string>/', views.UserSearchAPIView.as_view(), name='user_search'),
+    path('user/full_search/<int:param>/<str:string>/', views.UserFullSearchAPIView.as_view(), name='user_full_search'),
 
 ]

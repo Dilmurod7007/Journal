@@ -333,10 +333,18 @@ class JurnalSerializer(serializers.ModelSerializer):
 
 
 
+class ConferenceSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'name_uz', 'name_ru', 'name_en')
+        model = models.Conference
+
+
+
+
+
 class ConferenceSerializer(serializers.ModelSerializer):
     # date = serializers.CharField(write_only=True)
     # created_date = serializers.DateField(source='date', read_only=True)
-
 
     class Meta:
         fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive', 'views' )
@@ -365,6 +373,16 @@ class ConferenceSerializer(serializers.ModelSerializer):
 
         seminar = models.Conference.objects.create(**conference_data)
         return seminar
+
+
+
+
+class SeminarSearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', )
+        model = models.Seminar
+
 
 
 

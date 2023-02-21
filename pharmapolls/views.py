@@ -206,23 +206,67 @@ class UserSearchAPIView(generics.ListAPIView):
     serializer_class = serializers.AuthorSerializer
     permission_classes = [permissions.IsAuthenticated, ]
 
+    def get(self, request, param, string):
+        payload = {
+            'error': "notog'ri informatsia kiritildi",
+        }   
+        user = request.user
+
+        if param == 1:
+            objects = models.Jurnal.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False)
+            serializer = serializers.UserJournalListSerializer(objects, many=True, context={"request": request})
+        elif param == 2:
+            journals = models.Jurnal.objects.filter(organization=self.request.user.organization)
+            objects = models.Statya.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), jurnal__in=journals, archive=False)
+            serializer = serializers.StatyaSearchSerializer(objects, many=True, context={"request": request})
+        elif param == 3:
+            objects = models.Conference.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False)
+            serializer = serializers.ConferenceSearchSerializer(objects, many=True, context={"request": request})
+        elif param == 4:
+            objects = models.Seminar.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False)
+            serializer = serializers.SeminarSearchSerializer(objects, many=True, context={"request": request})
+        else:
+            return Response(payload, status=status.HTTP_303_SEE_OTHER)
+
+        return Response(serializer.data)
+
+
+
+class UserFullSearchAPIView(generics.ListAPIView):
+    queryset = models.Author.objects.all()
+    serializer_class = serializers.AuthorSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request, param, string):
         paginator = PageNumberPagination()
         payload = {
             'error': "notog'ri informatsia kiritildi",
         }   
-        user = request.user
-
-
+        my_string = string.split(',')
         if param == 1:
-            objects = models.Jurnal.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization)
-            serializer = serializers.UserJournalListSerializer(objects, many=True, context={"request": request})
+            paginator.page_size = 12
+            objects = models.Jurnal.objects.filter(id__in=my_string).order_by('-id')
+            result = paginator.paginate_queryset(objects, request)
+            serializer = serializers.JurnalSerializer(result, many=True, context={"request": request})
+        elif param == 2:
+            paginator.page_size = 12
+            objects = models.Statya.objects.filter(id__in=my_string).order_by('-id')
+            result = paginator.paginate_queryset(objects, request)
+            serializer = serializers.StatyaSerializer(result, many=True, context={"request": request})
+        elif param == 3:
+            paginator.page_size = 12
+            objects = models.Conference.objects.filter(id__in=my_string).order_by('-id')
+            result = paginator.paginate_queryset(objects, request)
+            serializer = serializers.ConferenceSerializer(result, many=True, context={"request": request})
+        elif param == 4:
+            paginator.page_size = 12
+            objects = models.Seminar.objects.filter(id__in=my_string).order_by('-id')
+            result = paginator.paginate_queryset(objects, request)
+            serializer = serializers.SeminarSerializer(result, many=True, context={"request": request})
         else:
             return Response(payload, status=status.HTTP_303_SEE_OTHER)
 
         return Response(serializer.data)
-
 
 
 class SearchAPIView(generics.ListAPIView):
@@ -241,28 +285,28 @@ class SearchAPIView(generics.ListAPIView):
                 # response = models.Organization.objects.filter(id__in=my_string)
                 # serializer = serializers.OrganizationSerializer(response, many=True, context={"request": request})
                 paginator.page_size = 15
-                objects = models.Organization.objects.filter(id__in=my_string)
+                objects = models.Organization.objects.filter(id__in=my_string).order_by('-id')
                 result = paginator.paginate_queryset(objects, request)
                 serializer = serializers.OrganizationSerializer(result, many=True, context={"request": request})
             elif param1 == 2:
                 # response = models.Jurnal.objects.filter(id__in=my_string)
                 # serializer = serializers.JurnalSerializer(response, many=True, context={"request": request})
                 paginator.page_size = 12
-                objects = models.Jurnal.objects.filter(id__in=my_string)
+                objects = models.Jurnal.objects.filter(id__in=my_string).order_by('-id')
                 result = paginator.paginate_queryset(objects, request)
                 serializer = serializers.JurnalSerializer(result, many=True, context={"request": request})
             elif param1 == 3:
                 # response = models.Statya.objects.filter(id__in=my_string)
                 # serializer = serializers.StatyaSerializer(response, many=True, context={"request": request})  
                 paginator.page_size = 12
-                objects = models.Statya.objects.filter(id__in=my_string)
+                objects = models.Statya.objects.filter(id__in=my_string).order_by('-id')
                 result = paginator.paginate_queryset(objects, request)
                 serializer = serializers.StatyaSerializer(result, many=True, context={"request": request})  
             elif param1 == 4:
                 # response = models.Author.objects.filter(id__in=my_string)
                 # serializer = serializers.AuthorSerializer(response, many=True, context={"request": request})   
                 paginator.page_size = 20
-                objects = models.Author.objects.filter(id__in=my_string)
+                objects = models.Author.objects.filter(id__in=my_string).order_by('-id')
                 result = paginator.paginate_queryset(objects, request)
                 serializer = serializers.AuthorSerializer(result, many=True, context={"request": request}) 
             else:
