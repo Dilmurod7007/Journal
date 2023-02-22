@@ -30,10 +30,10 @@ urlpatterns = [
     path("webcontact/", views.WebcontactList.as_view()),
     path('filter/<int:param1>/<int:param2>/<str:string>/', views.SearchAPIView.as_view(), name='search'),
     path('auth/login/', views.UserLoginAPIView.as_view(), name='login'),
-    path('auth/register/', views.UserRegisterAPIView.as_view(), name='register'),
+    # path('auth/register/', views.UserRegisterAPIView.as_view(), name='register'),
     path('auth/logout/', views.UserLogoutAPIView.as_view(), name='logout'),
     path('user/dashboard/', views.UserDashboardAPIView.as_view(), name='user_dashboard'),
-    path('user/journal_list/', views.UserJournalListAPIView.as_view(), name="user_journals"),
+    path('user/journal_list/<param>/', views.UserJournalListAPIView.as_view(), name="user_journals"),
     path('user/journal_list_for_search/', views.UserJournalListForSearchAPIView.as_view(), name='user_journal_for_search'),
     path('user/journal_create/', views.UserJournalCreateAPIView.as_view(), name="user_journal_create"),
     path('user/journal_update/<int:pk>/', views.UserJournalUpdateAPIView.as_view(), name='user_journal_update'),
@@ -59,6 +59,6 @@ urlpatterns = [
     path('user/subdivision_update/<int:pk>/', views.UserSubdivisionUpdateAPIView.as_view(), name='user_subdivision_update'),
     path('user/subdivision_delete/<int:pk>/', views.UserSubdivisionDeleteAPIView.as_view(), name='user_subdivision_delete'),
     path('user/search/<int:param>/<str:string>/', views.UserSearchAPIView.as_view(), name='user_search'),
-    path('user/full_search/<int:param>/<str:string>/', views.UserFullSearchAPIView.as_view(), name='user_full_search'),
+    # path('user/full_search/<int:param>/<str:string>/', views.UserFullSearchAPIView.as_view(), name='user_full_search'),
 
 ]
