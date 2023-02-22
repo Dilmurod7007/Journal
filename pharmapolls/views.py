@@ -213,17 +213,17 @@ class UserSearchAPIView(generics.ListAPIView):
         user = request.user
 
         if param == 1:
-            objects = models.Jurnal.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False)
+            objects = models.Jurnal.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False).order_by('-id')
             serializer = serializers.JurnalSerializer(objects, many=True, context={"request": request})
         elif param == 2:
             journals = models.Jurnal.objects.filter(organization=self.request.user.organization)
-            objects = models.Statya.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), jurnal__in=journals, archive=False)
+            objects = models.Statya.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), jurnal__in=journals, archive=False).order_by('-id')
             serializer = serializers.StatyaSerializer(objects, many=True, context={"request": request})
         elif param == 3:
-            objects = models.Conference.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False)
+            objects = models.Conference.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False).order_by('-id')
             serializer = serializers.ConferenceSerializer(objects, many=True, context={"request": request})
         elif param == 4:
-            objects = models.Seminar.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False)
+            objects = models.Seminar.objects.filter((Q(name_uz__contains=string) | Q(name_ru__contains=string) | Q(name_en__contains=string)), organization=user.organization, archive=False).order_by('-id')
             serializer = serializers.SeminarSerializer(objects, many=True, context={"request": request})
         else:
             return Response(payload, status=status.HTTP_303_SEE_OTHER)
