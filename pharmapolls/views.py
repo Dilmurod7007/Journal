@@ -48,6 +48,17 @@ class AuthorDetail(generics.RetrieveAPIView):
     queryset = models.Author.objects.all()
     serializer_class = serializers.AuthorDetailSerializer
 
+    def get(self, request, pk):
+        error_message = _("Obyekt topilmadi")
+        try:
+            author = models.Author.objects.get(id=pk)
+            author.views += 1
+            author.save()
+        except models.User.DoesNotExist:
+            return Response({'error_message': error_message}, status=status.HTTP_404_NOT_FOUND)
+        serializer = serializers.AuthorDetailSerializer(author, context={"request": request})
+        return Response(serializer.data)
+
 
 class JurnalList(generics.ListAPIView):
     queryset = models.Jurnal.objects.filter(archive=False).order_by('-id')
@@ -63,6 +74,17 @@ class PopularJurnalList(generics.ListAPIView):
 class JurnalDetail(generics.RetrieveAPIView):
     queryset = models.Jurnal.objects.filter(archive=False)
     serializer_class = serializers.JurnalDetailSerializer
+
+    def get(self, request, pk):
+        error_message = _("Obyekt topilmadi")
+        try:
+            jurnal_object = models.Jurnal.objects.get(id=pk)
+            jurnal_object.views += 1
+            jurnal_object.save()
+        except models.Jurnal.DoesNotExist:
+            return Response({'error_message': error_message}, status=status.HTTP_404_NOT_FOUND)
+        serializer = serializers.JurnalDetailSerializer(jurnal_object, context={"request": request})
+        return Response(serializer.data)
 
 
 class SubdivisionList(ListCreateAPIView):
@@ -106,9 +128,22 @@ class ConferenceList(ListCreateAPIView):
     serializer_class = serializers.ConferenceSerializer
 
 
-class ConferenceDetail(RetrieveUpdateDestroyAPIView):
+class ConferenceDetail(generics.RetrieveAPIView):
     queryset = models.Conference.objects.filter(archive=False)
     serializer_class = serializers.ConferenceSerializer
+
+    def get(self, request, pk):
+        error_message = _("Obyekt topilmadi")
+        try:
+            conference = models.Conference.objects.get(id=pk, archive=False)
+            conference.views += 1
+            conference.save()
+        except models.Conference.DoesNotExist:
+            return Response({'error_message': error_message}, status=status.HTTP_404_NOT_FOUND)
+        serializer = serializers.ConferenceSerializer(conference, context={"request": request})
+        return Response(serializer.data)
+
+
 
 
 class PlanningConferenceApiView(generics.ListAPIView):
@@ -140,6 +175,20 @@ class SeminarList(ListCreateAPIView):
 class SeminarDetail(RetrieveUpdateDestroyAPIView):
     queryset = models.Seminar.objects.filter(archive=False)
     serializer_class = serializers.SeminarSerializer
+
+
+class SeminarViewsAPIView(APIView):
+
+    def get(self, request, pk):
+        try:
+            seminar = models.Seminar.objects.get(id=pk)
+            seminar.views += 1
+            seminar.save()
+        except models.Seminar.DoesNotExist:
+            return Response("Object does not exist", status.HTTP_200_OK)
+        return Response("Succes", status.HTTP_200_OK)
+
+
 
 
 class VideoList(generics.ListAPIView):
@@ -683,7 +732,7 @@ class UserSeminarListAPIView(generics.ListAPIView):
     pagination_class = paginations.PaginateBy6
 
     def get_queryset(self):
-        return models.Seminar.objects.filter(organization=self.request.user.organization, archive=False)
+        return models.Seminar.objects.filter(organization=self.request.user.organization)
 
 
 class UserSeminarCreateAPIView(generics.CreateAPIView):
@@ -775,6 +824,26 @@ class UserSubdivisionDeleteAPIView(generics.DestroyAPIView):
         obj.delete()
         serializer = serializers.SubdivisionSerializer(obj, context={"request": request})
         return Response(serializer.data)
+
+
+
+class DownloadAPIView(APIView):
+
+
+    def get(self, request, param1, param2):
+        if param1 == 1:
+            obj = models.Jurnal.objects.get(id=param2)
+            obj.downloadview += 1
+            obj.save()
+        elif param1 == 2:
+            obj = models.Statya.objects.get(id=param2)
+            obj.downloadview += 1
+            obj.save()
+        else:
+            return Response("Error", status=status.HTTP_400_BAD_REQUEST)
+
+
+        return Response("Succes", status=status.HTTP_200_OK)
 
 
 

@@ -83,6 +83,8 @@ class Author(models.Model):
     work = models.CharField(max_length=250)
     image = models.ImageField(upload_to='images/authors/', blank=True, null=True)
     count_author = models.IntegerField(default=0)
+    downloadview = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def __str__(self):

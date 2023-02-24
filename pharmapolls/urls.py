@@ -19,6 +19,7 @@ urlpatterns = [
     path("conference_soon/", views.PlanningConferenceApiView.as_view()),  #used
     path("seminars/", views.SeminarList.as_view()),
     path("seminar/<int:pk>/", views.SeminarDetail.as_view()),
+    path("seminar_view/<int:pk>/", views.SeminarViewsAPIView.as_view()),
     path("statistics/", views.StatisticsApiView.as_view()),  #used
     path("videos/", views.VideoList.as_view()), #used
     path("video_gallery/<int:pk>/", views.VideoGalleryListAPIView.as_view()), #used
@@ -28,6 +29,7 @@ urlpatterns = [
     path("faq/", views.FaqList.as_view()),
     path("banner/", views.BannerList.as_view()),
     path("webcontact/", views.WebcontactList.as_view()),
+    path("download/<int:param1>/<int:param2>/", views.DownloadAPIView.as_view()),
     path('filter/<int:param1>/<int:param2>/<str:string>/', views.SearchAPIView.as_view(), name='search'),
     path('auth/login/', views.UserLoginAPIView.as_view(), name='login'),
     # path('auth/register/', views.UserRegisterAPIView.as_view(), name='register'),

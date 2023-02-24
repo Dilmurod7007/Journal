@@ -217,9 +217,13 @@ class ArticleUpdateCreateSerializer(serializers.ModelSerializer):
 
 class StatyaSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True, many=True)
+    jurnal_uz = serializers.StringRelatedField(source='jurnal.name_uz')
+    jurnal_ru = serializers.StringRelatedField(source='jurnal.name_ru')
+    jurnal_en = serializers.StringRelatedField(source='jurnal.name_en')
+
 
     class Meta:
-        fields = ('id', 'author', 'name_uz', 'name_ru', 'name_en', 'jurnal', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', 'archive')
+        fields = ('id', 'author', 'name_uz', 'name_ru', 'name_en', 'jurnal_uz', 'jurnal_ru', 'jurnal_en', 'language', 'downloadfile', 'downloadview', 'views', 'date', 'keyword', 'archive')
         model = models.Statya
 
 
