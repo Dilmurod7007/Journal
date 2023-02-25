@@ -207,7 +207,9 @@ class VideoGalleryListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         obj = models.Video_Gallery.objects.filter(video_id=self.kwargs['pk'])
-        print(obj)
+        video = models.Video.objects.get(id=obj.first().video.id)
+        video.views += 1
+        video.save()
         return models.Video_Gallery.objects.filter(video_id=self.kwargs['pk'])
 
 
@@ -218,10 +220,22 @@ class NewsList(generics.ListAPIView):
     pagination_class = paginations.PaginateBy12
 
 
-class NewsDetail(RetrieveUpdateDestroyAPIView):
+class NewsDetail(generics.RetrieveAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = models.News.objects.all()
     serializer_class = serializers.NewsSerializer
+
+    def get(self, request, pk):
+        error_message = _("Obyekt topilmadi")
+        try:
+            news = models.News.objects.get(id=pk)
+            news.views += 1
+            news.save()
+        except models.News.DoesNotExist:
+            return Response({'error_message': error_message}, status=status.HTTP_404_NOT_FOUND)
+        serializer = serializers.NewsSerializer(news, context={"request": request})
+        return Response(serializer.data)
+
 
 
 class ContactCreate(ListCreateAPIView):
@@ -687,7 +701,7 @@ class UserConferenceListAPIView(generics.ListAPIView):
     pagination_class = paginations.PaginateBy6
 
     def get_queryset(self):
-        return models.Conference.objects.filter(organization=self.request.user.organization, archive=False)
+        return models.Conference.objects.filter(organization=self.request.user.organization).order_by('-id')
 
 
 class UserConferenceCreateAPIView(generics.CreateAPIView):
@@ -732,7 +746,7 @@ class UserSeminarListAPIView(generics.ListAPIView):
     pagination_class = paginations.PaginateBy6
 
     def get_queryset(self):
-        return models.Seminar.objects.filter(organization=self.request.user.organization)
+        return models.Seminar.objects.filter(organization=self.request.user.organization).order_by('-id')
 
 
 class UserSeminarCreateAPIView(generics.CreateAPIView):
