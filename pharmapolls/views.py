@@ -162,6 +162,7 @@ class PlanningConferenceApiView(generics.ListAPIView):
 class SeminarList(ListCreateAPIView):
     queryset = models.Seminar.objects.filter(archive=False)
     serializer_class = serializers.SeminarSerializer
+    pagination_class = paginations.PaginateBy12
 
     def get(self, request):
         today = datetime.datetime.today()
@@ -169,7 +170,9 @@ class SeminarList(ListCreateAPIView):
         ended.update(archive=True)
         seminar = models.Seminar.objects.filter(archive=False).order_by('date')
         serializer = serializers.SeminarSerializer(seminar, many=True, context={"request": request})
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
+
+
 
 
 class SeminarDetail(RetrieveUpdateDestroyAPIView):

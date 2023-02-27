@@ -347,11 +347,13 @@ class ConferenceSearchSerializer(serializers.ModelSerializer):
 
 
 class ConferenceSerializer(serializers.ModelSerializer):
-    # date = serializers.CharField(write_only=True)
-    # created_date = serializers.DateField(source='date', read_only=True)
+    organization_uz = serializers.StringRelatedField(source='organization.name_uz')
+    organization_ru = serializers.StringRelatedField(source='organization.name_ru')
+    organization_en = serializers.StringRelatedField(source='organization.name_en')
+
 
     class Meta:
-        fields = ('id', 'organization', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive', 'views' )
+        fields = ('id', 'organization_uz', 'organization_ru', 'organization_en', 'name_uz', 'name_ru', 'name_en', 'description_uz', 'description_ru', 'description_en', 'adress_uz', 'adress_ru', 'adress_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'email','archive', 'views' )
         model = models.Conference
         read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive', 'organization']
 
@@ -392,11 +394,12 @@ class SeminarSearchSerializer(serializers.ModelSerializer):
 
 
 class SeminarSerializer(serializers.ModelSerializer):
-    # date = serializers.CharField(write_only=True)
-    # created_date = serializers.DateField(source='date', read_only=True)
+    organization_uz = serializers.StringRelatedField(source='organization.name_uz')
+    organization_ru = serializers.StringRelatedField(source='organization.name_ru')
+    organization_en = serializers.StringRelatedField(source='organization.name_en')
 
     class Meta:
-        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'fio_uz', 'fio_ru', 'fio_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
+        fields = ('id', 'name_uz', 'name_ru', 'name_en', 'organization_uz', 'organization_ru', 'organization_en', 'fio_uz', 'fio_ru', 'fio_en', 'description_uz', 'description_ru', 'description_en', 'link', 'linkbutton_uz', 'linkbutton_ru', 'linkbutton_en', 'phon_number', 'date', 'sponsor_uz', 'sponsor_ru', 'sponsor_en', 'archive', 'views')
         model = models.Seminar
         read_only_fields = ['sponsor_uz', 'sponsor_ru', 'sponsor_en', 'views', 'archive', 'description_uz', 'description_ru', 'description_en']
 
