@@ -126,6 +126,8 @@ class StatisticsApiView(generics.ListAPIView):
 class ConferenceList(ListCreateAPIView):
     queryset = models.Conference.objects.filter(archive=False)
     serializer_class = serializers.ConferenceSerializer
+    pagination_class = paginations.PaginateBy12
+
 
 
 class ConferenceDetail(generics.RetrieveAPIView):
@@ -162,17 +164,14 @@ class PlanningConferenceApiView(generics.ListAPIView):
 class SeminarList(ListCreateAPIView):
     queryset = models.Seminar.objects.filter(archive=False)
     serializer_class = serializers.SeminarSerializer
-    pagination_class = paginations.PaginateBy12
+    pagination_class = paginations.PaginateBy20
 
-    def get(self, request):
+    def get_queryset(self):
         today = datetime.datetime.today()
         ended = models.Seminar.objects.filter(Q(date__lt=today))
         ended.update(archive=True)
         seminar = models.Seminar.objects.filter(archive=False).order_by('date')
-        serializer = serializers.SeminarSerializer(seminar, many=True, context={"request": request})
-        return self.get_paginated_response(serializer.data)
-
-
+        return seminar
 
 
 class SeminarDetail(RetrieveUpdateDestroyAPIView):
@@ -736,9 +735,6 @@ class UserConferenceDeleteAPIView(generics.DestroyAPIView):
         obj.save()
         serializer = serializers.ConferenceSerializer(obj, context={"request": request})
         return Response(serializer.data)
-
-
-
 
 
 

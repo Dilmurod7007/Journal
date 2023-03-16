@@ -2,6 +2,8 @@ from django.contrib import admin
 from . import models
 from .models import Organization, Author, Jurnal, Subdivision, Statya, Conference, News, Faq, Banner, Webcontact
 from modeltranslation.admin import TranslationAdmin
+from django.contrib.auth.admin import UserAdmin
+
 
 
 class VidioInline(admin.StackedInline):
@@ -73,13 +75,13 @@ class WebcontactAdmin(TranslationAdmin):
     model = Webcontact
 
 
-@admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'email',  'is_active']
 
 
 
 admin.site.register(models.Organization, OrganizationAdmin)
+admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Author, AuthorAdmin)
 admin.site.register(models.Jurnal, JurnalAdmin)
 admin.site.register(models.Statya, ArticleAdmin)
