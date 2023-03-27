@@ -60,8 +60,27 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 @receiver(pre_save, sender=User)
-def hash_password(sender, instance, **kwargs):
-    instance.set_password(instance.password)
+def hash_password(sender, instance, created=False, **kwargs):
+    print(instance.is_superuser, 'sdaad')
+    if created:
+        if instance.is_superuser:
+
+            user = instance
+        else:
+            instance.set_password(instance.password)
+
+    else:
+        user = instance
+
+        if user:
+            new_password = user.password
+            try:
+                old_password = User.objects.get(pk=user.pk).password
+            except User.DoesNotExist:
+                old_password = None
+
+            if new_password != old_password:
+                    instance.set_password(instance.password)
 
 
 class Organization(models.Model):
