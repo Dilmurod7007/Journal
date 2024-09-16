@@ -488,6 +488,8 @@ class UserLoginAPIView(APIView):
     queryset = models.User.objects.all()
 
     def post(self, request, *args, **kwargs):
+        user = models.User.objects.all()
+        print(user)
         email = request.data.get('email')
         password = request.data.get('password')
         error_message = _("Siz ro'yxatdan o'tmagansiz, Iltimos ro'yxatdan o'ting!!!")
